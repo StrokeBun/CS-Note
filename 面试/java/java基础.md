@@ -56,21 +56,21 @@ equals 的默认实现即为 == (Object类)，但一般进行 override
 
 **1. 8种基本类型**(java不存在无符号类型)：
 
-boolean: <font color=red>理论上</font> 1 位(具体见 JVM 实现)，true 或者 false; 不能使用 C++ 与整数判断的方法
+- boolean: <font color=red>理论上</font> 1 位(具体见 JVM 实现)，true 或者 false; 不能使用 C++ 与整数判断的方法
 
-byte: 8 位，范围 -128 - 127
+- byte: 8 位，范围 -128 - 127
 
-char: 16 位，存储Unicode码
+- char: 16 位，存储Unicode码
 
-short: 16 位整数，范围 -32768 - 32767
+- short: 16 位整数，范围 -32768 - 32767
 
-int : 32 位整数
+- int : 32 位整数
 
-long: 64 位整数
+- long: 64 位整数
 
-float: 32 位浮点数
+- float: 32 位浮点数
 
-double: 64 位浮点数，一般选择 double 而不是 float ，double 的运算速度并不比 float 慢
+- double: 64 位浮点数，一般选择 double 而不是 float ，double 的运算速度并不比 float 慢
 
 **2. 包装类型**
 
