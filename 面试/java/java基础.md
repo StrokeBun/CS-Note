@@ -4,13 +4,13 @@
 
 ### 1. JDK、JRE、JVM、JMM
 
-jdk : java 开发工具包，包含了 jre，以及编译器 javac 和调试分析工具
+- jdk : java 开发工具包，包含了 jre，以及编译器 javac 和调试分析工具
 
-jre : java 运行环境，包含了 jvm 和类库
+- jre : java 运行环境，包含了 jvm 和类库
 
-jvm :  java 虚拟机
+- jvm :  java 虚拟机
 
-jmm ：java 内存模型，规定了线程与内存的关系，是jvm的一个规范
+- jmm ：java 内存模型，规定了线程与内存的关系，是jvm的一个规范
 
 关系：jdk > jre > jvm
 
@@ -231,9 +231,9 @@ Java 的泛型是伪泛型，在编译期间，将进行类型擦除，字节码
 
 ### 5. super 与 this
 
-this 即引用类当前实例，非必要，但可以增加可读性(构造函数)
+- this 即引用类当前实例，非必要，但可以增加可读性(构造函数)
 
-super 用于访问父类的变量与方法， super() 调用父类的构造方法, 但**必须位于第一行**
+- super 用于访问父类的变量与方法， super() 调用父类的构造方法, 但**必须位于第一行**
 
 this 与 super 均不能用于 static 方法中，this、super属于实例， static 属于类
 
