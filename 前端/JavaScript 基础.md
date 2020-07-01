@@ -174,5 +174,74 @@ var obj = JSON.parse(jsonUser);
 
 
 
+### 6. OOP
+
+**原型** 
+
+js 通过原型来实现 oop，就是个父类
+
+``` javascript
+var student = {
+    name: "student",
+    age: 3
+}
+var bzzb = {
+    name : "bzzb"
+}
+// bzzb的原型是 student
+bzzb.__proto__ = student;
+```
 
 
+
+**class继承**
+
+class 在 ES 6 引入，实现类定义，**<font color=blue>本质还是原型</font>**
+
+``` javascript
+class Student {
+    // 构造器固定为constructor
+    constructor(name) {
+        this.name = name;
+    }
+    // 成员方法
+    hello() {
+        alert('hello');
+    }
+}
+
+var bzzb = new Student('bzzb');
+
+// 继承
+class underGraduate extends Student {
+    constructor(name, age) {
+        super(name); // 同样使用super调用父类方法
+        this.age = age;
+    }
+}
+```
+
+
+
+### 7. 操作 BOM 对象(重点)
+
+BOM：Browser Object Model
+
+#### 主要对象
+
+- window： 代表浏览器窗口
+- navigator：封装了浏览器信息，大多数不会使用，因为会被认为修改
+- screen：全屏属性
+- location (重要)：代表当前的 URL 信息，
+
+``` javascript
+host: "www.baidu.com"
+href: "https://www.baidu.com/"
+protocol: "https"
+reload // 刷新网页
+location.assign('http://101.132.96.161/') // 跳转
+```
+
+- document：代表当前的页面， HTML DOM 文档树
+
+- history：代表历史记录，底层用栈实现，不建议使用
