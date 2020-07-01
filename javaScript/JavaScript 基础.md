@@ -95,9 +95,82 @@ for (let x of arr) {
 }
 ```
 
-### 4. 函数与 OOP
 
 
+### 4. 函数
+
+函数与方法：函数类外，方法类内
+
+#### 4.1 定义函数
+
+因为没有类型，故不需要定义返回值
+
+``` javascript
+function abs(x) {
+    if (x >= 0) {
+        return x; // js每行会加';', 故不要在return之后换行
+    } else {
+        return -x;
+    }
+}
+
+// 或者
+var abs = function(x) {
+    if (x >= 0) {
+        return x; 
+    } else {
+        return -x;
+    }
+}
+```
+
+#### 4.2 变量作用域
+
+**全局变量**
+
+所有全局变量都会绑定到全局对象 window上，为减少冲突，自己定义全局变量实现(类似 C++ 的命名空间)
+
+``` javascript
+// 唯一全局变量
+var MyApp = {};
+// 定义全局变量
+MyApp.name = 'bzzb';
+MyApp.add = function (a, b) {
+    return a + b;
+}
+```
+
+**局部变量**
+
+局部变量使用 **let** 定义
+
+**常量**
+
+ES 6 引入 **const** 关键字实现常量
+
+
+
+### 5. 内部对象
+
+#### 5.1 Date
+
+具体使用查文档
+
+#### 5.2 JSON
+
+``` javascript
+var user = {
+    name : 'bzzb',
+    age : 20,
+    sex : '男',
+}
+// 对象 to JSON
+var jsonUser = JSON.stringify(user);
+// JSON to 对象
+var obj = JSON.parse(jsonUser);
+```
+
+#### 5.3 Ajax
 
 
 
