@@ -36,7 +36,7 @@ let b = 2;
 
 
 
-### 3.数据类型
+### 3. 数据类型
 
 #### 3.1 字符串
 
@@ -176,7 +176,7 @@ var obj = JSON.parse(jsonUser);
 
 ### 6. OOP
 
-**原型** 
+#### 原型 
 
 js 通过原型来实现 oop，就是个父类
 
@@ -194,7 +194,7 @@ bzzb.__proto__ = student;
 
 
 
-**class继承**
+#### class继承
 
 class 在 ES 6 引入，实现类定义，**<font color=blue>本质还是原型</font>**
 
@@ -245,3 +245,62 @@ location.assign('http://101.132.96.161/') // 跳转
 - document：代表当前的页面， HTML DOM 文档树
 
 - history：代表历史记录，底层用栈实现，不建议使用
+
+
+
+### 8. 操作 DOM 对象
+
+DOM：Document Object Model，文档对象模型
+
+浏览器网页就是一个 DOM 树形结构
+
+#### 8.1 获取 DOM 节点
+
+``` javascript
+// js 原生操作
+var h1 = document.getElementsByTagName('h1'); // 标签选择器
+var h2 = document.getElementById('p1'); // id选择器
+var h3 = document.getElementsByClassName('p2'); // 类选择器
+var childrens = h3.children; // 子节点
+```
+
+#### 8.2 更新节点
+
+``` javascript
+element.innerText = 'bzzb'; // 修改文本的值
+element.innerHTML = '<strong>bzzb</strong>'; // 可以解析HTML
+element.style = ... // 更改css
+```
+
+#### 8.3 删除节点
+
+删除节点的步骤：
+
+- 获取待删除节点
+
+- 获取父节点
+- 通过父节点删除
+
+``` javascript
+var p1 = document.getElement... // 获取子节点
+var pfather = p1.parentElement; // 获取父节点
+pfather.remove(p1); // 删除，是过程动态，类似 ArrayList的remove
+```
+
+#### 8.4 插入节点
+
+``` javascript
+var node = document.getElement.. // 已存在节点
+var list = document.getElementById('list');
+list.appendChild(node); // 移动节点
+
+var newP = document.createElement('p'); // 直接创建新节点
+newP.id = 'newP';
+newP.innerText = 'bzzb';
+list.appendChild(newP);
+
+// 设置属性创建标签
+var myScript = document.createElement('script');
+myScript.setAttribute('type', 'text/javascript');
+```
+
