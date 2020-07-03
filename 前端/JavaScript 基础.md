@@ -172,7 +172,7 @@ var obj = JSON.parse(jsonUser);
 
 #### 5.3 Ajax
 
-
+Ajax 的核心是 XMLHttpRequest
 
 ### 6. OOP
 
@@ -303,4 +303,27 @@ list.appendChild(newP);
 var myScript = document.createElement('script');
 myScript.setAttribute('type', 'text/javascript');
 ```
+
+
+
+### 9. jQuery
+
+``` javascript
+// 公式
+$(selector).action()
+// 选择器与CSS相同
+$('p').click(); // 标签选择器
+$('#id').click(); // id选择器
+$('.class').click(); // 类选择器
+```
+
+
+
+### 其他
+
+**常用资源**
+
+layui layer
+
+elemet-ui
 
