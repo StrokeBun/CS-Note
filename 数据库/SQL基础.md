@@ -117,5 +117,54 @@ SELECT product_name, product_type FROM Product
 WHERE product_type = '衣服';
 ```
 
+##### 5.4.4 运算符
 
+``` sql
+>, <, = -- 对应大于，小于，等于
+<> --不等于
+-- IS NULL 判断是否为空
+SELECT * FROM Product WHERE product_price IS NULL;
+```
+
+
+
+### 6. 聚合与排序
+
+#### 6.1 聚合
+
+聚合，即将多行汇总与一行，用于汇总的函数称为**聚合函数**
+
+``` sql
+-- 常用聚合函数,其中p为列字段
+COUNT(p) -- 计算该字段非NULL的行数
+COUNT(*) -- 会得到实际行数，即使全为NULL也计算
+SUM(p) -- 计算该字段的和，不会计算NULL
+AVG(p) -- 计算该字段的平均值，不会计算NULL
+MAX(p) -- 最大值
+MIN(p) -- 最小值 
+```
+
+#### 6.2 分组
+
+``` sql
+-- GROUP BY 用于切分表
+SELECT product_type from Product
+GROUP BY product_type;
+```
+
+GROUP BY 的注意事项
+
+- 只能用于 SELECT 中，写在 WHERE/FROM 之后
+- 不能使用别名
+- GROUP BY 聚合结果无序
+- WHERE 子句不能使用聚合函数
+
+#### 6.3 排序
+
+``` sql
+-- 使用 ORDER BY进行排序，默认升序
+SELECT * FROM Product ORDER BY product_id;
+-- DESC 进行降序
+SELECT * FROM Product ORDER BY product_id DESC;
+```
 
