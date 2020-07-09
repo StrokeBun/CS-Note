@@ -75,17 +75,28 @@ RENAME TABLE Poduct to Product;
 #### 5.1 增
 
 ``` sql
-START TRANSACTION; -- 开启事务
-INSERT INTO Product VALUES ('0001', 'T恤衫', '衣服');
-INSERT INTO Product VALUES ('0002', '打孔器', '办公用品');
-INSERT INTO Product VALUES ('0003', '运动T恤', '衣服');
-INSERT INTO Product VALUES ('0004', '菜刀', '厨房用具');
-COMMIT; -- 提交
+INSERT INTO Product VALUES ('0001', 'T恤衫', '衣服'), ('0002', '打孔器', '办公用品');
+
+-- 从OtherProduct复制
+INSERT INTO Product SELECT * FROM OtherProduct;
 ```
 
+#### 5.2 删
 
+``` sql
+-- DELETE 只能使用 WHERE 子句
+DELETE FROM Product WHERE product_id = 1;
+-- TRUNCATE 删除表中所有数据
+TRUNCATE Product;
+```
 
-### 5.4 查
+#### 5.3 改
+
+``` sql
+UPDATE Product SET product_price = 500 WHERE product_id = 1;
+```
+
+#### 5.4 查
 
 ##### 5.4.1 基本查询
 
@@ -126,7 +137,28 @@ WHERE product_type = '衣服';
 SELECT * FROM Product WHERE product_price IS NULL;
 ```
 
+#### <font color=red>5.5 事务</font>
 
+**事务**：在同一个处理单元中执行的一系列更新处理的集合；MySQL默认一条SQL语句就是一个事务
+
+``` sql
+-- MySQL的事务实现
+START TRANSACTION; -- 开启事务
+INSERT INTO Product VALUES ('0001', 'T恤衫', '衣服'), ('0002', '打孔器', '办公用品');
+COMMIT; -- 提交
+
+-- 事务回滚
+START TRANSACTION;
+INSERT INTO Product VALUES ('0001', 'T恤衫', '衣服'), ('0002', '打孔器', '办公用品');
+ROLLBACK; -- 回滚
+```
+
+事务的 **ACID**特性：
+
+- **Atomicity**：原子性，事务要么全部执行，要么全部不执行
+- **Consistency**：一致性，事务前后数据的完整性必须保持一致
+- **Isolation**：隔离性，不同事务之间互不干扰
+- **Durability**：持久性，事务一旦提交，数据改变就是永久性的
 
 ### 6. 聚合与排序
 
