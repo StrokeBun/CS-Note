@@ -200,3 +200,43 @@ SELECT * FROM Product ORDER BY product_id;
 SELECT * FROM Product ORDER BY product_id DESC;
 ```
 
+
+
+### 7. 函数、谓词、CASE表达式
+
+#### 7.1 函数
+
+**算术函数**
+
+``` sql
+-- 算术函数
++ - * /
+ABS(num) -- 绝对值函数
+MOD(被除数，除数) -- 取余
+ROUND(对象数值，保留小数的位数) -- 对该数进行四舍五入
+```
+
+**字符串函数**
+
+``` sql
+CONCAT(str1, str2, str3) -- 连接字符串
+LENGTH(str) -- 字符串长度
+LOWER(str) -- 转为小写
+UPPER(str) -- 转为大写
+REPLACE(str1, str2, str3) -- 字符串替换
+-- REPLACE('ABC12','ABC', 'abc') = 'abc12'
+SUBSTRING(str FROM 截取的起始位置 FOR 截取的字符数)
+```
+
+**日期函数**
+
+``` sql
+CURRENT_DATE
+CURRENT_TIME
+CURRENT_TIMESTAMP
+```
+
+#### 7.2 谓词
+
+
+
