@@ -269,5 +269,38 @@ FROM vendors LEFT OUTER JOIN products
 ON vendors.vend_id = products.vend_id;
 ```
 
+### 9. 组合查询
 
+UNION用以组合多个查询
+
+``` mysql
+SELECT vend_id, prod_id, prod_price FROM products
+WHERE prod_price <= 5
+UNION
+SELECT vend_id, prod_id, prod_price FROM products
+WHERE vend_id IN(1001,1002)
+-- 需要排序时 ORDER BY 必须放在最后一条查询
+ORDER BY vend_id, prod_price;
+```
+
+规则：
+
+- 由两条或以上的 SELECT 语句组成，使用 UNION 分隔
+
+- 每个查询必须包含相同的列、表达式或聚集函数
+- 列数据类型必须兼容
+
+
+
+### 10. 触发器
+
+触发器会在事件发生时自动执行，仅**支持表**，不支持视图、临时表
+
+``` sql
+-- 创建触发器，该触发器在插入成功后进行提醒
+CREATE TRIGGER newproduct AFTER INSERT ON products
+FOR EACH ROW SELECT 'Product added';
+-- 删除触发器
+DROP TRIGGER newproduct;
+```
 
