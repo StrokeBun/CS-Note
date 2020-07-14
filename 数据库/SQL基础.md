@@ -180,8 +180,10 @@ MIN(p) -- 最小值
 
 ``` sql
 -- GROUP BY 用于切分表
-SELECT product_type from Product
-GROUP BY product_type;
+SELECT product_type FROM Product GROUP BY product_type;
+-- HAVING 用于过滤分组，用法与 WHERE 相同
+SELECT product_type, COUNT(*) AS orders 
+FROM Product GROUP BY product_type HAVING COUNT(*) >= 2;
 ```
 
 GROUP BY 的注意事项
@@ -237,6 +239,35 @@ CURRENT_TIMESTAMP
 ```
 
 #### 7.2 谓词
+
+**LIKE**：用以模糊搜索
+
+``` sql
+-- %用于匹配任意字符
+SELECT * FROM Product WHERE product_name LIKE '%外套%'
+-- _用于匹配一个字符
+SELECT * FROM Product WHERE product_name LIKE '_外套' -- 匹配大外套
+```
+
+
+
+### 8. 联结
+
+``` sql
+-- 等值联结
+SELECT vend_name, prod_name, prod_price
+FROM vendors AS v, products AS p
+WHERE v.vend_id = p.vend_id;
+-- 内部联结
+SELECT vend_name, prod_name, prod_price
+FROM vendors INNER JOIN products
+ON vendors.vend_id = products.vend_id;
+-- 外部联结，包括了相关表中没有联结的行，例如vendors中有id为4，但products中无为4的id
+-- 使用内部联结将无法查询，而使用外部联结将以NULL进行填充
+SELECT vend_name, prod_name, prod_price
+FROM vendors LEFT OUTER JOIN products
+ON vendors.vend_id = products.vend_id;
+```
 
 
 
