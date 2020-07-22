@@ -6,7 +6,7 @@
 
 应用程序与网络协议进行交互的接口
 
-#### 1. 1 调用TCP
+#### 1.1 调用TCP
 
 <img src="img/socket的TCP通信.jpg" alt="avatar" style="zoom:50%;" />
 
