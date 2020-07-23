@@ -30,7 +30,7 @@ Spring 是一个轻量级的 Java EE 解决方案，并整合众多优秀的设�
 
 ``` java
 Class clazz = Class.forName("xxx.xx.xx.UserServiceImpl");
-UserService userService = (UserService)clazz.newInstance();
+UserService userService = (UserService)clazz.newInstance(); // newInstance调用了无参构造函数
 return userService;
 ```
 
@@ -98,4 +98,84 @@ Spring 的配置文件
 1. 配置文件的存放位置: 任意, 但需要进行配置文件路径的配置
 2. 配置文件的命名: 任意，推荐 applicationContext.xml
 ```
+
+#### 2.2 Spring 核心 API
+
+- ApplicationContext：创建对象的工厂
+
+  ``` markdown
+  1. 接口类型
+  非web环境接口实现: ClassPathXmlApplicationContext
+  web环境接口实现: XmlWebApplicationContext
+  2. 重量级资源
+  一个应用程序只会创建一个工厂对象，线程安全
+  ```
+
+#### 2.3 程序开发
+
+- 程序开发流程
+
+  ``` markdown
+  1. 配置文件
+  <!-- id:唯一标识； class:类的全限定名 -->
+  <bean id="person" class="com.stroke.demo.entity.Person"></bean>
+  2. 通过工厂类获得对象
+  ```
+
+- 代码实现
+
+  ```java
+  // 1. 获得Spring的工厂
+  ApplicationContext ctx = 
+      new ClassPathXmlApplicationContext("/applicationContext.xml");
+  // 2. 创建对象,下述为几种实现
+  // getBean通过反射创建对象，调用该类的无参构造函数，如果不存在无参构造将报错
+  Person person = (Person) ctx.getBean("person");
+  Person person = ctx.getBean("person", Person.class);
+  Person person = ctx.getBean(Person.class); // 该实现要求配置文件中只有一个bean的class为Person，否则抛出NoUniqueBeanDefinitionException异常
+  ```
+
+- 配置文件的细节
+
+  ``` markdown
+  1. 只配置 class 的情况下
+  a) Spring 会自动生成 id 值，默认为 类的全限定名#数字
+  b) 当 bean 只使用一次的时候，才能省略 id
+  2. name 属性
+  作用: 为 bean 对象定义别名，使用类似 id
+  与 id 的区别:
+  	a) name 可以有多个，id 唯一
+  	b) containsBeanDefinition 方法只能判断 id 不能判断 name，containsBean 方法二者皆可        判断
+  ```
+
+  #### 2.4 Spring 工厂的底层实现(简易版)
+
+  Spring 工厂可以通过调用**私有**的构造函数创建对象，反射面前无私有
+
+  <img src="img/spring工厂简单流程.jpg" alt="avatar" style="zoom:70%">
+
+### 3. 注入
+
+#### 3.1 简介
+
+注入即通过工厂与配置文件，为创建对象的**成员变量赋值**，去除编码方式赋值存在的耦合
+
+#### 3.2 如何注入
+
+- 成员变量提供 setter
+
+- 配置文件
+
+  ``` properties
+      <bean id="person" class="com.stroke.demo.entity.Person">
+          <property name="id">
+              <value>1</value>
+          </property>
+          <property name="name">
+              <value>bzzb</value>
+          </property>
+      </bean>
+  ```
+
+#### 3.3 注入原理(简易版)
 
