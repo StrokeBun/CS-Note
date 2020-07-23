@@ -177,7 +177,7 @@ Spring 的配置文件
       </bean>
   ```
 
-#### 3.3 Set 注入详解
+#### 3.3 Set 注入
 
 ##### 3.3.1 JDK内置类型
 
@@ -293,7 +293,7 @@ Spring 的配置文件
 
 <img src="img/原先的代码控制.jpg" alt="avatar">
 
-Spring 将成员赋值的控制权交给 **配置文件 + Spring 工厂**，只需更改配置文件，无需改动代码
+Spring 将成员赋值的控制权交给 **配置文件 + Spring 工厂**，只需更改配置文件，无需改动代码，**无需重新编译**
 
 #### 4.2 依赖注入 DI(Dependency Injection)
 
@@ -449,4 +449,29 @@ public class ConnectionFactory {
 ```
 
 
+
+### 6. Spring 工厂创建对象的次数
+
+#### 6.1 控制简单对象的创建次数
+
+配置文件中设定 bean 中的 scope 属性的值为
+
+- singleton：单例模式，只会创建一次，是**<font color=blue>默认值</font>**
+- prototype：原型模式，每一次都会创建新的对象
+
+#### 6.2 控制复杂对象的创建次数
+
+``` markdown
+设置 FactoryBean 接口中的 isSingleton 方法的返回值为 true 即可实现单例
+```
+
+常设置为单例的对象：
+
+- 工厂类
+- DAO
+- Service
+
+
+
+### 7. 对象生命周期
 
