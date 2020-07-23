@@ -398,3 +398,55 @@ Spring 的工作：本质上就是**接口回调**
 
 - 根据配置文件获得实现类，并判断是否为 FactoryBean 的子类
 - 调用 getObject()
+
+
+
+#### 5.2 实例工厂
+
+##### 5.2.1 使用实例工厂的原因
+
+``` markdown
+1. 避免实现 FactoryBean 产生的 Spring 框架的侵入，即用户需要必须实现框架的类或者接口
+2. 整合遗留系统，例如只提供 .class 文件的系统
+```
+
+##### 5.2.2 开发步骤
+
+遗留系统，原有的工厂代码
+
+``` java
+public class ConnectionFactory {
+
+    public Connection getConnection() throws Exception {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/new_3d_web?serverTimezone=Asia/Shanghai&useSSL=false",
+                "root","root");
+        return conn;
+    }
+
+}
+```
+
+- 配置文件
+
+  ``` properties
+  <bean id="connFactory" class="com.stroke.demo.factorybean.ConnectionFactory"/>
+  <bean id="conn" factory-bean="connFactory" factory-method="getConnection"/>
+  ```
+
+  通过 getBean("conn") 即可获得 Connection 对象
+
+
+
+#### 5.3 静态工厂
+
+与实例工厂的区别在于是否**需要工厂的实例**，静态工厂直接调用 static 方法即可
+
+配置文件的差异即是否需要创建工厂的 bean
+
+``` properties
+<bean id="conn3" class="com.stroke.demo.factorybean.StaticConnectionFactory" factory-method="getConnection" />
+```
+
+
+
