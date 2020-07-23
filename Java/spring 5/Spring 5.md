@@ -177,5 +177,111 @@ Spring 的配置文件
       </bean>
   ```
 
-#### 3.3 注入原理(简易版)
+#### 3.3 Set 注入详解
+
+##### 3.3.1 JDK内置类型
+
+**1. String + 基本类型**
+
+``` properties
+<value>要注入的值</value>
+```
+
+简化写法
+
+``` properties
+<property name="id" value="1" />
+<property name="name" value="bzzb" />
+```
+
+**2. List、Set等容器**
+
+``` properties
+<list>
+	<value>注入的值1</value>
+	<value>注入的值2</value>
+	<value>注入的值3</value>
+</list>
+```
+
+**3. Map**
+
+``` properties
+<map>
+	<entry>
+		<key><value> uzi </value></key>
+		<value> yyds </value>
+	</entry>
+</map>
+```
+
+##### 3.3.2 自定义类型
+
+**1. 第一种方式**
+
+配置文件
+
+``` properties
+<bean id="userService" class="xxx.UserServiceImpl">
+	<property name="userDao">
+		<bean class="xxx.UserDaoImpl" />
+	</property>
+</bean>
+```
+
+**2. 第二种方式**
+
+第一种方式存在的问题：
+
+- 当 Dao 被多个 Service 调用时，存在多个 bean 的相同配置，代码冗余
+- 创建了多个 Dao 实例，实际上可以使用同一个
+
+使用引用改善
+
+``` properties
+<bean id="userService" class="xxx.UserServiceImpl">
+	<property name="userDao">
+		<ref bean="userDAO" />
+	</property>
+</bean>
+
+<!-- 简化写法 -->
+<bean id="userService" class="xxx.UserServiceImpl">
+	<property name="userDao" ref="userDAO" />
+</bean>
+```
+
+
+
+#### 3.4 构造注入
+
+通过调用**有参构造**注入属性
+
+配置文件
+
+``` properties
+<bean id="customer" class="com.stroke.demo.entity.Customer">
+     <constructor-arg value="bzzb"></constructor-arg>
+     <constructor-arg value="22"></constructor-arg>
+</bean>
+```
+
+如何**区分重载**的构造函数？
+
+**1. 参数个数不同**
+
+``` properties
+控制 constructor-arg 的个数
+```
+
+**2. ** **参数个数相同**
+
+``` properties
+通过 type 指定类型
+<bean id="customer" class="com.stroke.demo.entity.Customer">
+     <constructor-arg type="int" value="22"></constructor-arg>
+</bean>
+```
+
+
 
