@@ -285,3 +285,21 @@ Spring 的配置文件
 
 
 
+### 4. <font color = red>反转控制与依赖注入</font>
+
+#### 4.1 反转控制 IOC(Inverse of Control)
+
+原先的成员赋值由代码实现
+
+<img src="img/原先的代码控制.jpg" alt="avatar">
+
+Spring 将成员赋值的控制权交给 **配置文件 + Spring 工厂**，只需更改配置文件，无需改动代码
+
+#### 4.2 依赖注入 DI(Dependency Injection)
+
+例如 Service 依赖 DAO，将 DAO 作为 Service 的成员变量，通过 Spring 进行注入
+
+
+
+### 5. Spring 工厂创建复杂对象
+
