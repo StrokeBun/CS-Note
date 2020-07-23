@@ -303,3 +303,98 @@ Spring 将成员赋值的控制权交给 **配置文件 + Spring 工厂**，只�
 
 ### 5. Spring 工厂创建复杂对象
 
+复杂对象：不能直接通过 new 构造方法创建的对象，例如 Connection，SqlSessionFactory等
+
+Spring 创建复杂对象的三种方法：
+
+- **FactoryBean 接口**
+- **实例工厂**
+- **静态工厂**
+
+
+
+#### 5.1 FactoryBean 接口
+
+##### 5.1.1接口定义
+
+``` java
+public interface FactoryBean<T> {
+    
+    // 创建复杂对象
+    @Nullable
+    T getObject() throws Exception;
+
+    // 复杂对象的Class
+    @Nullable
+    Class<?> getObjectType();
+
+    // 是否单例
+    default boolean isSingleton() {
+        return true;
+    }
+}
+```
+
+##### 5.1.2 开发步骤
+
+- 实现 FactoryBean 接口
+
+  ``` jade
+  public class ConnectionFactoryBean implements FactoryBean<Connection> {
+  
+      public Connection getObject() throws Exception {
+          Class.forName("com.mysql.jdbc.Driver");
+          Connection conn = DriverManager.getConnection
+          ("jdbc:mysql://localhost:3306/new_3d_web?serverTimezone=Asia/Shanghai", 		    "root","root");
+          return conn;
+      }
+  
+      public Class<?> getObjectType() {
+          return Connection.class;
+      }
+  
+      public boolean isSingleton() {
+          return false;
+      }
+  }
+  ```
+
+- 配置文件
+
+  ``` properties
+  <bean id="conn" class="com.stroke.demo.factorybean.ConnectionFactoryBean" />
+  ```
+
+  ``` java
+  Connection connection = (Connection) ctx.getBean("conn");
+  ```
+
+  **<font color=blue>注意此处获得的是 Connetion 对象， 而不是 ConnectionFactoryBean 对象</font>**
+
+##### 5.1.3 细节
+
+- 如果想实现 ConnectionFactoryBean 对象，通过加 & 实现
+
+  ```java
+  ConnectionFactoryBean cfb = (ConnectionFactoryBean)ctx.getBean("&conn");
+  ```
+
+- isSingleton() 根据业务需要确定，例如工厂对象可以设置为单例
+
+- 不足：上述代码仍存在耦合，例如 url, username, password 与代码耦合，使用 DI 解耦
+
+  ``` properties
+      <bean id="conn" class="com.stroke.demo.factorybean.ConnectionFactoryBean">
+          <property name="driveClassName" value="com.mysql.jdbc.Driver" />
+          <property name="url" value="jdbc:mysql://localhost:3306/new_3d_web?	  serverTimezone=Asia/Shanghai&amp;useSSL=false" />
+          <property name="username" value="root" />
+          <property name="password" value="root" />
+      </bean>
+  ```
+
+##### 5.1.4 FactoryBean 的实现原理(简易版)
+
+Spring 的工作：本质上就是**接口回调**
+
+- 根据配置文件获得实现类，并判断是否为 FactoryBean 的子类
+- 调用 getObject()
