@@ -475,3 +475,83 @@ public class ConnectionFactory {
 
 ### 7. 对象生命周期
 
+<font color=blue>对象的生命周期：一个对象创建、存活、消亡的一个完整过程</font>
+
+#### 7.1 创建阶段
+
+**何时创建**
+
+- 单例：scope="singleton"，Spring 工厂创建的时候(ApplicationContext 创建的时候)创建对象，饿汉式
+
+  注：也可改为懒汉式，设置 lazy-init="true"
+
+- 原型：scope="prototype"，Spring 工厂在获取对象( getBean )时，创建对象
+
+#### 7.2 初始化阶段
+
+Spring 工厂创建对象后调用对象的初始化方法
+
+``` markdown
+1. 提供方: 程序员
+2. 调用方: Spring 工厂
+```
+
+**实现方式**
+
+- 实现 InitializingBean 接口
+
+  ``` java
+  public interface InitializingBean {
+      void afterPropertiesSet() throws Exception;
+  }
+  ```
+
+- 对象中提供一个普通的方法，通过配置文件指出
+
+  ``` java
+  public void init() {
+      ...
+  }
+  
+  <bean id="product" class="com.stroke.demo.life.Product" init-method="init" />
+  ```
+
+**初始化细节**
+
+- 同时实现两种方式，先调用 afterPropertiesSet() 方法， 再调用用户自定义方法
+- **先注入再进行初始化**，所以方法名称为 afterPropertiesSet
+
+#### 7.3 销毁阶段
+
+``` markdown
+1. Spring 什么时候销毁创建的对象
+  ctx.close();
+2. 销毁方法: 程序员根据自己需求定义，Spring 工厂完成调用
+```
+
+**实现方式**
+
+- 实现 DisposableBean 接口
+
+  ``` java
+  public interface DisposableBean {
+      void destroy() throws Exception;
+  }
+  ```
+
+- 通过配置文件
+
+  ``` properties
+  <bean id="product" class="com.xxx.Product" destroy-method="destroy" />
+  ```
+
+**销毁细节**
+
+- 类似初始化阶段，先调用接口， 再调用用户自定义方法
+- 销毁方法**只适用于单例模式**，即 scope="singleton"
+
+#### 7.4 总结
+
+注入发生在 1 与 2 之间
+
+<img src="img/对象的生命周期.jpg" alt="avatar">
