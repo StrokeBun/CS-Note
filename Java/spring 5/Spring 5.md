@@ -555,3 +555,94 @@ Spring 工厂创建对象后调用对象的初始化方法
 注入发生在 1 与 2 之间
 
 <img src="img/对象的生命周期.jpg" alt="avatar">
+
+
+
+### 8. 配置文件参数化
+
+将配置文件中需要经常修改的部分，转移到更小的配置文件中
+
+- 提供一个 .properties 的文件
+
+  ``` properties
+  jdbc.driverClassName = com.mysql.jdbc.Driver
+  jdbc.url = jdbc:mysql://localhost:3306/new_3d_web?serverTimezone=Asia/Shanghai&useSSL=false
+  jdbc.username = root
+  jdbc.password = root
+  ```
+
+- 整合 Spring 的配置文件和 .properties 文件
+
+  ``` xml
+      <context:property-placeholder location="classpath:/db.properties" />
+  
+      <bean id="conn" class="com.stroke.demo.factorybean.ConnectionFactoryBean">
+          <property name= "driveClassName" value="${jdbc.driverClassName}"/>
+          <property name="url" value="${jdbc.url}" />
+          <property name="username" value="${jdbc.username}" />
+          <property name="password" value="${jdbc.password}" />
+      </bean>
+  ```
+
+### 9. 自定义类型转换器
+
+Spring 内部没有提供特定类型转换时，需要自己实现
+
+**实现**
+
+- 实现 Converter 接口
+
+  ``` java
+  @FunctionalInterface
+  public interface Converter<S, T> {
+      @Nullable
+      T convert(S var1);
+  }
+  ```
+
+  ``` java
+  public class MyDateConverter implements Converter<String, Date> {
+      
+      private String pattern;
+  
+      @Override
+      public Date convert(String s) {
+          Date date = null;
+          try {
+              SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+              date = sdf.parse(s);
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+          return date;
+      }
+  }
+  ```
+
+- Spring 配置文件进行注册
+
+  ``` xml
+      <!-- 此处对pattern进行DI -->
+      <bean id="myDateConverter" class="com.stroke.demo.basic.MyDateConverter" >
+          <property name="pattern" value="yyyy-MM-dd"/>
+      </bean>
+      <!-- 注册转化器 -->
+      <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+          <property name="converters">
+              <!-- 此处需要是set标签 -->
+              <set>
+                  <ref bean="myDateConverter" />
+              </set>
+          </property>
+      </bean>
+  ```
+
+**注意**
+
+- ConversionServiceFactoryBean 的 id 是**固定**的，不能采用其他字符串
+
+  ``` xml
+  <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+  ```
+
+  
