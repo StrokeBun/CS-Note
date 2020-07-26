@@ -645,4 +645,38 @@ Spring 内部没有提供特定类型转换时，需要自己实现
   <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
   ```
 
-  
+
+### 10. BeanPostProcessor
+
+BeanPostProcessor 作用：对 Spring 工厂所创建的对象，进行再加工；是一个接口
+
+``` java
+public interface BeanPostProcessor {
+    // 发生在InitializingBean之前，注入之后
+    @Nullable
+    // 参数bean是对象， beanName是配置文件中的id
+    // 提供了接口default实现，JDK 1.8引入 
+    default Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+
+    // 发生在init-method之后
+    @Nullable
+    default Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+}
+```
+
+**实现**
+
+- 实现 BeanPostProcessor 接口
+- 配置文件的中对该实现进行配置
+
+**细节**
+
+- **<font color=blue>BeanPostProcessor 会对 Spring 创建的所有对象进行处理</font>**，故实现时需要使用 **instanceof** 进行判断
+
+bean 生命周期 2.0版本
+
+<img src="img/对象的生命周期2.0.jpg" alt="avatar">
