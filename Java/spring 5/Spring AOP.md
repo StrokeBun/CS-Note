@@ -271,3 +271,122 @@ public Object invoke(Object proxy, Method var2, Object[] var3) throws Throwable 
 ```
 
 ##### 4.2.3 CGlib 的动态代理
+
+CGlib 可以为没实现任何接口的原始类创建代理类，通过**<font color=blue>继承</font>**实现
+
+实现类似 Proxy
+
+``` java
+        // 1. 创建原始对象
+        UserService userService = new UserService();
+        // 2. 通过cglib创建动态代理对象
+        Enhancer enhancer = new Enhancer();
+        enhancer.setClassLoader(CglibTest.class.getClassLoader());
+        enhancer.setSuperclass(userService.getClass());
+
+        MethodInterceptor interceptor = new MethodInterceptor() {
+            @Override
+            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                System.out.println("----cglib log---");
+                Object ret = method.invoke(userService, objects);
+                return ret;
+            }
+        };
+        enhancer.setCallback(interceptor);
+        UserService proxy = (UserService)enhancer.create();
+        // 3. 调用
+        proxy.register(new User());
+```
+
+##### 4.2.4 Spring 加工代理对象
+
+通过原对象的 id 获得的是代理类对象，原因是 <font color=blue>Spring 在 BeanPostProcessor 中将原对象作为 postProcessAfterInitialization(Object, String)方法的第一个参数，通过动态代理获得代理类</font>
+
+<img src="img/spring加工代理对象.jpg"/>
+
+### 5. 基于注解的 AOP 编程
+
+AOP 默认使用 JDK 动态代理实现，但可切换为 CGlib
+
+#### 5.1 开发步骤
+
+- 原始类
+
+- 切面
+
+  ``` java
+  // @Aspect 说明该类是切面类
+  @Aspect
+  public class MyAspect {
+  
+      // 切人点和切面函数
+      @Around("execution(* login(..))")
+      public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+          System.out.println("aspect log before");
+          Object ret = joinPoint.proceed();
+          System.out.println("aspect log after");
+          return ret;
+      }
+  
+  }
+  ```
+
+  ``` xml
+      <bean id="userService" class="com.stroke.demo.aspect.UserServiceImpl" />
+      <bean id="around" class="com.stroke.demo.aspect.MyAspect" />
+      <!-- 基于注解来进行AOP -->
+      <aop:aspectj-autoproxy />
+  ```
+
+#### 5.2 切入点复用
+
+``` java
+    @Pointcut("execution(* login(..))")
+    public void myPointcut(){}
+
+    // 切人点和切面函数
+    @Around(value = "myPointcut()")
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+        ...
+    }
+```
+
+### 6. AOP 开发的坑
+
+``` java
+public class UserServiceImpl implements UserService {
+    @Override
+    public void register(User user) {
+        System.out.println("register log");
+        this.login("bzzb", "bzzb");
+    }
+
+    @Override
+    public void login(String name, String password) {
+        System.out.println("login log");
+    }
+}
+```
+
+上述代码 register 方法调用了 login 方法，但不会调用 login 方法的切面，
+
+这是实现切面是代理类调用 login 方法，而此时调用的是原始类的 login 方法
+
+通过 ApplicationContextAware 接口可以解决
+
+``` java
+    private ApplicationContext ctx;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.ctx = applicationContext;
+    }
+
+    @Override
+    public void register(User user) {
+        System.out.println("register log");
+        UserService userService = (UserService) ctx.getBean("userService");
+        userService.login("bzzb", "bzzb");
+    }
+```
+
