@@ -93,8 +93,6 @@ Spring 2.x 开始支持的注解
 	
 ```
 
-
-
 #### 2.2 注入相关注释
 
 ##### 2.2.1 @Autowired
@@ -156,8 +154,6 @@ private UserDAO userDAO;
   2. 第三方代码类仍需要使用配置文件
   ```
 
-
-
 ### 4. Spring 的高级注解
 
 #### 4.1 配置 Bean
@@ -175,6 +171,8 @@ public class AppConfig {
 // 创建工厂
 ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
 ```
+
+配置 Bean 的底层是使用 **CGlib 代理实现**
 
 #### 4.2 @Bean
 
@@ -305,5 +303,91 @@ public class AppConfig {
 public class AppConfig {
     
 }
+```
+
+
+
+### 7. 纯注解 AOP 开发
+
+#### 7.1 开发步骤
+
+- 原始对象
+
+  ``` java
+  @Service
+  public class UserServiceImpl implements UserService {
+      ...
+  }
+  ```
+
+- 切面类
+
+  ``` java
+  @Aspect
+  @Component
+  public class MyAspect {
+      @Arround("execution(* *(..))")
+      public Object arround(ProceedingJoinPoint joinPoint) throws Throwable {
+          // 额外功能
+          Object ret = joinPoint.proceed();
+          // 额外功能
+          return ret;
+      }
+  }
+  ```
+
+- 开启 aop:aspect-autoproxy
+
+  ``` java
+  @EnableAspectAutoProxy
+  public class AppConfig {
+      
+  }
+  ```
+
+#### 7.2 细节分析
+
+- JDK 与 cglib 的切换，默认是 jdk 动态代理
+
+  ``` java
+  @EnableAspectAutoProxy(proxyTargetClass = true) // true:cglib, false:jdk
+  ```
+
+- Springboot 默认开启了 EnableAspectAutoProxy，默认是 cglib 动态代理
+
+
+
+### 8. Spring 中 YML 的使用
+
+#### 8.1 YML 介绍
+
+``` markdown
+YML(YAML)是一种比XML更简单，比properties更强大的配置文件
+```
+
+Spring 整合 yaml 相对繁琐，Springboot 默认支持 yaml 文件
+
+#### 8.2 Properties 配置的问题
+
+``` markdown
+1. 表达式复杂，无法表达数据的内在联系
+2. 无法表达对象，集合
+```
+
+#### 8.3 YML 基本语法
+
+``` yaml
+1.基本语法
+	name: bzzb
+	password: 1234
+2.对象
+	accout:
+		id: 1
+		name: bzzb
+		password: 1234
+3.集合
+	nameSet:
+		- bzzb
+		- leyan
 ```
 
