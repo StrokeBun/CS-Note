@@ -156,6 +156,8 @@ private UserDAO userDAO;
   2. 第三方代码类仍需要使用配置文件
   ```
 
+
+
 ### 4. Spring 的高级注解
 
 #### 4.1 配置 Bean
@@ -174,7 +176,134 @@ public class AppConfig {
 ApplicationContext ctx = new AnnotationConfigApplicationContext(AppConfig.class);
 ```
 
+#### 4.2 @Bean
+
+##### 4.2.1 基本使用
+
+@Bean 对简单对象和复杂对象的创建方法都相同
+
+``` java
+@Configuration
+public class AppConfig {
+    
+    @Bean
+    public User user() {
+        return new User();
+    }
+}
+```
+
+- 自定义 id 值
+
+  ``` java
+  @Bean("user")
+  ```
+
+- 控制对象创建次数
+
+  ``` java
+  @Bean("user")
+  @Scope("singleton") // singleton/prototype
+  ```
+
+##### 4.2.2 @Bean 注解的注入
+
+``` java
+@Configuration
+public class AppConfig {
+    
+    @Bean
+    public UserDAO userDAO() {
+        return new UserDAOImpl();
+    }
+    
+    @Bean
+    public UserService userService(UserDAO userDAO) {
+        UserServiceImpl userService = new UserServiceImpl();
+        userService.setUserDAO(userDAO);
+        return userService;
+    }
+}
+```
 
 
 
+### 5. Spring 工厂创建对象的多种配置方式
+
+#### 5.1 多种配置方式的应用场景
+
+- @Component、@Autowired：用于程序员自己开发的类型
+- @Bean：框架提供的类型，以及其他的程序员开发的类型；在方法体中书写创建代码
+- 配置文件：遗留系统的整合
+
+#### 5.2 优先级
+
+``` markdown
+@Componet 及其衍生注解 < @Bean < 配置文件
+优先级高的配置可以覆盖优先级低的配置
+```
+
+
+
+### 6. 整合多个配置
+
+拆分多个配置bean，是为了实现模块化开发
+
+整合情形：
+
+- 多配置 Bean 整合
+- 配置 Bean 与 @Component 整合
+- 配置 Bean 与 配置文件整合
+
+要点：
+
+- 如何汇总
+- 如何配置注入
+
+#### 6.1 多配置 Bean 整合
+
+- 将配置 bean 放在同一个包下，通过 AnnotationConfigApplicationContext 整合
+
+  ``` java
+  ApplicationContext ctx = new AnnotationConfigApplicationContext("xxx.config");
+  ```
+
+- 通过 @Import
+
+  ``` java
+  @Configuration
+  @Import(Appconfig2.class)
+  public class Appconfig1 {
+      ...
+  }
+  ```
+
+#### 6.2 配置 Bean 与 @Component 整合
+
+通过 @ComponentScan 整合
+
+``` java
+@Configuration
+@ComponentScan(basePackages="xxx.xxx")
+public class AppConfig {
+    ...
+}
+```
+
+#### 6.3 配置 Bean 与配置文件整合
+
+主要场景：
+
+- 遗留系统整合
+- 配置覆盖
+
+整合方式
+
+``` java
+@Configuration
+@ImportResource("配置文件路径")
+public class AppConfig {
+    
+}
+```
 
