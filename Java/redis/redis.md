@@ -134,6 +134,8 @@ sdshdr 相比 C 字符串的优势：
 
 #### 3.2 List
 
+List 常用于消息队列
+
 ##### 3.2.1 基本命令
 
 ``` markdown
@@ -149,6 +151,108 @@ sdshdr 相比 C 字符串的优势：
 ```
 
 ##### 3.2.2 底层实现
+
+
+
+#### 3.3 Set
+
+可以实现关注用户、共同关注等功能
+
+##### 3.3.1 基本命令
+
+``` markdown
+1. sadd myset value ---> 添加元素
+2. SMEMBERS myset  ---> 查看指定set的所有值
+3. SISMEMBER myset value  ---> 查看value是否在myset中
+4. scard myset ---> 查看元素个数
+5. srem myset value ---> 删除set中的value元素
+6. 集合操作
+	- 差集: SDIFF set1 set2 
+	- 交集: SINTER set1 set2
+	- 并集: SUNION set1 set2
+```
+
+##### 3.3.2 底层实现
+
+
+
+#### 3.4 Hash
+
+Hash 类似 String，只不过 key-value 变为 key-map 
+
+常用于存储对象
+
+##### 3.4.1 基本命令
+
+``` markdown
+1. hset myhash key1 value1   ---> 设置元素
+2. hmset myhash k1 v1 k2 v2  ---> 批量设置
+3. hgetall myhash ---> 获得key对应的map
+4. hdel myhash --->删除key对象的map
+5. hlen myhash ---> 获取字段数量
+
+```
+
+##### 3.4.2 底层实现
+
+
+
+#### 3.5 Zset
+
+Zset 在 set 的基础上增加了 score 属性，实现排序；可用于排行榜
+
+##### 3.5.1 基本命令
+
+``` markdown
+1. zadd myset score value  ---> 添加元素，优先级为score
+2. ZRANGEBYSOCRE myset min max [WITHSOCRES] ---> 获取score范围在min - max 之间的元素，可选带优先级
+3. zcount myset min max ---> 获取指定区间的成员数量
+```
+
+
+
+### 4. 三种特殊数据类型
+
+#### 4.1 geospatial 地理位置
+
+```markdown
+常用命令
+1. geoadd table 经度 纬度 placename ---> 添加地理位置
+2. getpos table placename ---> 获取指定位置的经度和纬度
+3. geodist table placename1 placename2 单位 ---> 获取两地的直线距离
+4. georadius table 经度 纬度 半径 单位 ---> 以所给经度、纬度为圆心，获得在半径范围内的位置
+5. georadiusbymember table place 半径 单位 ---> 以所给位置为圆心，获得在半径范围内的位置
+```
+
+
+
+#### 4.2 Hyperloglog
+
+基数：一个数据集里不重复元素的个数
+
+redis 2.8.9 加入了 hyperloglog，用来进行基数统计，其优点是占用内存固定，但计算存在一定误差
+
+适用场景：允许误差的统计
+
+``` markdown
+常用命令
+1. PFadd mykey v1 v2 v3 v4.... ---> 添加元素
+2. PFCOUNT mykey ---> 计算mykey的基数
+3. PFMERGE dist mykey1 mykey2... ---> 合并多个hyperloglog
+```
+
+
+
+#### 4.3 Bitmaps
+
+针对于两个状态数据的存储
+
+``` markdown
+常用命令
+1. setbit mapname index value ---> 将第index位设置为value，value为0/1
+2. getbit mapname index ---> 取得第index位
+3. bitcount mapname ---> 计算位图中1的个数
+```
 
 
 
