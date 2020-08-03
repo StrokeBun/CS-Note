@@ -254,3 +254,70 @@ redis 2.8.9 加入了 hyperloglog，用来进行基数统计，其优点是占�
 
 
 
+### 5. 事务
+
+redis 执行单条命令保证原子性，<font color=blue>事务不保证原子性</font>
+
+redis 的事务：
+
+- 开启事务，multi
+
+- 命令入队
+
+- 执行事务，exec，到这里才开始真正执行，执行每一个命令
+
+  取消事务，discard
+
+redis 的事务回滚
+
+- 编译期错误( 命令有错 )，则所有命令都会回滚
+- 运行期错误( 例如 incr 一个非数字)，错误命令回滚，其他命令正常执行
+
+
+
+**redis 实现乐观锁**
+
+悲观锁：任何适合都加锁
+
+乐观锁：不会上锁，更新数据的时候判断是否发生了变动；获取 version，更新数据时判断 version 是否一致
+
+redis 使用 watch 命令可以实现乐观锁
+
+
+
+### 6. Jedis
+
+jedis 的操作与命令相同
+
+``` java
+Jedis jedis = new Jedis("127.0.0.1", 6379);
+jedis.flushDB();
+jedis.set("k1", "bzzb");
+```
+
+
+
+### 7. Springboot 整合redis
+
+springboot 2.x 之后，使用了 lettuce 替换了 jedis
+
+- jedis：采用直连，多线程操作不安全，需要使用连接池，类似 BIO 模式
+- lettuce：采用 netty，实例可以在多个线程共享，线程安全，类似 NIO 模式
+
+``` java
+@Autowired
+private RedisTemplate redisTemplate;
+
+/* 
+opsForValue 操作字符串类型
+opsForList  操作List
+opsForSet   操作Set
+... 
+*/
+redisTemplate.opsForValue().set("k1", "v1");
+```
+
+
+
+### 8. Redis 配置文件详解
+
