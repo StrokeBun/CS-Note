@@ -136,7 +136,7 @@ sdshdr 相比 C 字符串的优势：
 
 List 常用于消息队列
 
-##### 3.2.1 基本命令
+**基本命令**
 
 ``` markdown
 1. LPUSH/RPUSH key value ---> 往列表key头/尾插入数值
@@ -150,7 +150,7 @@ List 常用于消息队列
 
 ```
 
-##### 3.2.2 底层实现
+
 
 
 
@@ -158,7 +158,7 @@ List 常用于消息队列
 
 可以实现关注用户、共同关注等功能
 
-##### 3.3.1 基本命令
+**基本命令**
 
 ``` markdown
 1. sadd myset value ---> 添加元素
@@ -172,7 +172,7 @@ List 常用于消息队列
 	- 并集: SUNION set1 set2
 ```
 
-##### 3.3.2 底层实现
+
 
 
 
@@ -182,7 +182,7 @@ Hash 类似 String，只不过 key-value 变为 key-map
 
 常用于存储对象
 
-##### 3.4.1 基本命令
+**基本命令**
 
 ``` markdown
 1. hset myhash key1 value1   ---> 设置元素
@@ -193,15 +193,13 @@ Hash 类似 String，只不过 key-value 变为 key-map
 
 ```
 
-##### 3.4.2 底层实现
+
 
 
 
 #### 3.5 Zset
 
-Zset 在 set 的基础上增加了 score 属性，实现排序；可用于排行榜
-
-##### 3.5.1 基本命令
+**基本命令**
 
 ``` markdown
 1. zadd myset score value  ---> 添加元素，优先级为score
