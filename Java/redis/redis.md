@@ -321,3 +321,58 @@ redisTemplate.opsForValue().set("k1", "v1");
 
 ### 8. Redis 配置文件详解
 
+- 网络
+
+  ``` bash
+  bind 127.0.0.1  ---> 绑定ip
+  protected-mode yes ---> 保护模式，只接收127.0.0.1和::1的地址
+  port 6379 ---> 端口
+  ```
+
+- 通用
+
+  ``` bash
+  daemonize yes ---> 守护进程，默认是no; windows不存在该配置
+  pidfile /var/run/redis_6379.pid ---> 以后台运行，需要指定pid
+  database 16 ---> 数据库数量
+  ```
+
+- snapshoting 快照：用于持久化
+
+  ``` bash
+  如果一定时间内进行了操作，则会进行持久化
+  save 900 1  ---> 900s 至少修改了一次
+  save 300 10 ---> 300s 至少修改10次
+  save 60 10000 ---> 1min 内至少修改10000次
+  
+  stop-writes-on-bgsave-error yes ---> 出错是否继续工作
+  rdbcompression yes ---> 是否压缩
+  rdbchecksum yes ---> 是否校验
+  dir ./     ---> 存放位置
+  ```
+
+- LIMITS
+
+  ``` bash
+  maxclients 10000 ---> 最多连接客户端
+  maxmemory <bytes> ---> 最大内存
+  maxmemory-policy noeviction ---> 内存到达上限策略
+  	1. volatile-lru: 只对会过期的key进行LRU
+  	2. allkeys-lru: LRU
+  	3. volatile-random: 随机删除即将过期的key
+  	4. allkeys-random: 随机删除
+  	5. volatile-ttl: 删除即将过期的
+  	6. noeviction: 永不删除，直接返回错误
+  ```
+
+- APPEND ONLY MODE： AOF 的配置
+
+  ``` bash
+  appendonly no ---> 默认不开启aof模式，默认使用rdb
+  appendfilename "appendonly.aof" ---> aof默认文件名
+  appendfsync everysec ---> 每秒执行一次同步，可能丢失这一秒的数据
+  			always ---> 每次改变都同步
+  
+  ```
+
+  
