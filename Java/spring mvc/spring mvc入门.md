@@ -98,7 +98,32 @@
 
 ### 4. 数据输出
 
+spring mvc 传给前端数据的方式
 
+- 参数中传入 Map、Model、ModelMap，然后进行赋值
+
+  ``` java
+      @RequestMapping("/test")
+      public String test(Model model) {
+          model.addAttribute("msg", "hello");
+          return "success";
+      }
+  ```
+
+  三者关系：ModelMap 实现了 Map 接口，Model 是 Spring的接口，最后实现都是 BindingAwareModelMap，该类继承了 ModelMap，实现了 Model、Map 接口， 该对象保存的数据将会存放在请求域
+
+- 返回值为 ModelAndView
+
+  ``` java
+      public ModelAndView test() {
+          // viewName是要跳转的页面
+          ModelAndView mv = new ModelAndView("success");
+          mv.addObject("msg", "...");
+          return  mv;
+      }
+  ```
+
+- 
 
 ### x. 整体结构介绍
 
