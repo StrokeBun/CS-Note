@@ -123,7 +123,17 @@ spring mvc 传给前端数据的方式
       }
   ```
 
-- 
+- @ModelAttributes
+
+
+
+### 5. 数据转换
+
+Spring MVC 如何将页面提交的字符串转化为对应的类型
+
+WebDataBinder 负责处理以上工作
+
+
 
 ### x. 整体结构介绍
 
