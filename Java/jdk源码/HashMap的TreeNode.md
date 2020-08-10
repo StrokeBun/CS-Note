@@ -53,6 +53,7 @@
             do {
                 int ph, dir; K pk;
                 TreeNode<K,V> pl = p.left, pr = p.right, q;
+                // 确定左右子树
                 if ((ph = p.hash) > h)
                     p = pl;
                 else if (ph < h)
