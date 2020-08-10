@@ -2,7 +2,7 @@
 
 ## HashMap
 
-### 1. 原理讲解
+### 1. 原理
 
 #### 1.1 继承体系
 
@@ -40,7 +40,7 @@
 
 #### 1.3 注意点
 
-- 默认数组大小 16，最大长度 2^31，默认负载因子 0.75，树降级为链表的阈值为 6 (rehash 后触发)
+- 默认数组大小 16，最大长度 2^31，默认负载因子 0.75，树降级为链表的阈值为 6 (rehash 时触发)
 
   **树化阈值**有两个，链表长度为 8， 数组长度为 64
 
@@ -150,7 +150,7 @@ public V put(K key, V value) {
                             treeifyBin(tab, hash);
                         break;
                     }
-                    // 如果 key 已存在，则直接break更新value
+                    // 如果 key 已存在，则直接更新value
                     if (e.hash == hash &&
                         ((k = e.key) == key || (key != null && key.equals(k))))
                         break;
