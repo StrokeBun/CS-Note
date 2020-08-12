@@ -4,6 +4,10 @@
 
 ### 1. DispatcherServlet
 
+执行流程
+
+<img src="img/执行流程.jpg" />
+
 所有请求通过 DispatcherServlet 拦截，并调用 doDispatch 方法
 
 <img src="img/DispatcherServlet调用链.jpg" />
