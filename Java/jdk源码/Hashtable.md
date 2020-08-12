@@ -176,3 +176,29 @@ hashtable 是线程安全的哈希表，但其使用 synchronized 修饰方法�
     }
 ```
 
+### 7. remove 方法
+
+``` java
+    public synchronized V remove(Object key) {
+        Entry<?,?> tab[] = table;
+        int hash = key.hashCode();
+        int index = (hash & 0x7FFFFFFF) % tab.length;
+        Entry<K,V> e = (Entry<K,V>)tab[index];
+        for(Entry<K,V> prev = null ; e != null ; prev = e, e = e.next) {
+            if ((e.hash == hash) && e.key.equals(key)) {
+                modCount++;
+                if (prev != null) {
+                    prev.next = e.next;
+                } else { // 删除的是头节点
+                    tab[index] = e.next;
+                }
+                count--;
+                V oldValue = e.value;
+                e.value = null;
+                return oldValue;
+            }
+        }
+        return null;
+    }
+```
+
