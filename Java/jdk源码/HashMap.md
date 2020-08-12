@@ -467,3 +467,10 @@ public V put(K key, V value) {
     }
 ```
 
+### 7. 与 hashtable 的对比
+
+- Hashtable 通过 synchronized 修饰方法来实现线程安全，HashMap 非线程安全
+- HashMap 允许 key 和 value 为 null，hashtable 要求均不为 null
+- 初始化：HashMap 使用了懒初始化，当 put 第一个元素才分配内存，默认容量为 16，并严格控制数组长度为 2 的幂；Hashtable 调用构造函数时分配内存，默认容量为 11
+- put：Hashtable 直接调用 key 的 hashCode() 作为 hash 值，并与 0x7FFFFFFF 进行与运算保证正数，直接求余获取数组下标；HashMap 中的 hash 将 key 的 hashCode() 高 16 位与低 16 位进行异或运算，减少哈希冲突，因为数组长度严格为 2 的幂，直接使用位运算提高了运算速度
+- 扩容：Hashtable 采用 2 倍 + 1 扩容，rehash 时直接重新求余，并颠倒了链表顺序；HashMap 采用 2倍扩容，rehash 时采用高低链表，原来顺序未改变，可能发生红黑树退化为链表
