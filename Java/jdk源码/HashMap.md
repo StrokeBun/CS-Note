@@ -88,7 +88,8 @@
 ```
 
 ``` java
-    static final int tableSizeFor(int cap) {
+    // tableSizeFor获得大于等于当前值的最小的2^n
+	static final int tableSizeFor(int cap) {
         int n = cap - 1;
         n |= n >>> 1;
         n |= n >>> 2;
@@ -465,6 +466,4 @@ public V put(K key, V value) {
         return null;
     }
 ```
-
-
 
