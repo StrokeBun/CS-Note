@@ -135,6 +135,72 @@ WebDataBinder 负责处理以上工作
 
 
 
+### 6. 拦截器
+
+在 DispatcherServlet 后执行，使用场景：登录认证、字符过滤等
+
+#### 6.1 自定义拦截器
+
+主要有两种实现方式
+
+- 实现 HandlerInterceptor 接口
+
+  ``` java
+  public interface HandlerInterceptor {
+      // 返回true即放行
+  	default boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+  			throws Exception {
+  
+  		return true;
+  	}
+  
+  	default void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+  			@Nullable ModelAndView modelAndView) throws Exception {
+  	}
+  
+  	default void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+  			@Nullable Exception ex) throws Exception {
+  	}
+  
+  }
+  ```
+
+- 继承实现了 HandlerInterceptor 接口的类
+
+#### 6.2 拦截器流程
+
+<img src="img/拦截器流程.jpg" />
+
+
+
+### 7. 全局异常处理
+
+Spring MVC 异常的默认处理是响应一个500状态码和错误信息， Spring MVC提供了一个 HandlerExceptionResolver 接口，可用于统一异常处理。  
+
+``` java
+public interface HandlerExceptionResolver {
+	@Nullable
+	ModelAndView resolveException(
+			HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception ex);
+
+}
+```
+
+``` java
+@Component
+public class MyExceptionResolver implements HandlerExceptionResolver {
+	@Override
+	public ModelAndView resolveException(HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse, Object o, Exception e) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("error");
+		return mv;
+	}
+}
+```
+
+
+
 ### x. 整体结构介绍
 
 <img src="img/spring mvc 主要servlet.jpg" />
