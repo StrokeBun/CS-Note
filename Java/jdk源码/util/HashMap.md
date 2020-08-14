@@ -109,7 +109,7 @@
 ``` java
 // 核心是调用putVal方法
 public V put(K key, V value) {
-    	// hash方法对hashCode高16位与低16位 进行&运算
+    	// hash方法对hashCode高16位与低16位 进行^运算
         return putVal(hash(key), key, value, false, true);
 }
 ```
