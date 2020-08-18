@@ -1,8 +1,10 @@
+[toc]
+
 ## synchronized
 
 ### 1. 介绍
 
-synchronized 是 java 中的悲观锁，在 jdk 1.6引入了偏向锁、轻量锁进行锁升级降低了性能消耗
+synchronized 是 java 中的可重入悲观锁，在 jdk 1.6引入了偏向锁、轻量锁进行锁升级降低了性能消耗
 
 <img src="img/java monitor.jpg" style="zoom:80%" />
 
@@ -16,17 +18,48 @@ synchronized 的三种加锁方式
 
 ### 2. 原理
 
+#### 2.1 JVM 层次
+
 java 中的锁，其实就是一个 monitor 对象，java 的每个对象都携带 monitor，monitor 存放在**对象头**的 
 
 Mark Word  中，下图是 Mark Word 中与锁相关的部分
 
 <img src="img/mark word中锁相关部分.jpg" />
 
-在进入同步代码块前，会使用monitorenter 指令尝试获取锁，结束同步代码块后，执行 monitorexit  释放锁
+``` c++
+ ObjectMonitor() {
+    _header       = NULL;
+    _count        = 0; // 该线程获取锁的次数
+    _waiters      = 0,
+    _recursions   = 0; // 锁重入次数
+    _object       = NULL;
+    _owner        = NULL; // 持有ObjectMonitor对象的线程
+    _WaitSet      = NULL; // wait状态线程列表
+    _WaitSetLock  = 0 ;
+    _Responsible  = NULL ;
+    _succ         = NULL ;
+    _cxq          = NULL ;
+    FreeNext      = NULL ;
+    _EntryList    = NULL ; // 等待锁释放的线程队列
+    _SpinFreq     = 0 ;
+    _SpinClock    = 0 ;
+    OwnerIsThread = 0 ;
+  }
+```
+
+在进入同步代码块前，会使用 monitorenter 指令尝试获取锁，获取失则线程挂起，进入 WaitSet
+
+结束同步代码块后，执行 monitorexit  释放锁，如果调用 wait 则进入 WaitSet
 
 <img src ="img/moniterenter.jpg" />
 
 <img src ="img/moniterexit.jpg" />
+
+#### 2.2 CPU 级别
+
+JVM 底层使用 Atomic::cmpxchg_ptr 尝试把 monitor 的 _owner 字段设置为当前线程，
+
+依赖了 CPU 底层的 <a href="../jdk源码/util/CAS.md">CAS 原语</a>，使用 lock 指令实现
 
 
 
@@ -60,5 +93,5 @@ Mark Word  中，下图是 Mark Word 中与锁相关的部分
 
 #### 3.3 重量级锁
 
-重量级锁开始使线程挂起阻塞，减少 CPU 消耗
+重量级锁开始使线程挂起阻塞，减少 CPU 消耗，需要进入内核态
 
