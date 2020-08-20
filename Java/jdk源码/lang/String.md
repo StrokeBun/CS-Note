@@ -17,7 +17,7 @@ Java 中的字符串类，String 是不可变的，直接使用双引号声明�
     * 底层使用不可变char数组存储，在jdk1.9之后改用byte数组存储，并且有ISO-8859-1和UTF16两种编码
     */
     private final char value[];
-	// 默认为 0
+    // 默认为 0
     private int hash;
 ```
 
@@ -53,7 +53,7 @@ Java 中的字符串类，String 是不可变的，直接使用双引号声明�
         this.value = Arrays.copyOfRange(value, offset, offset+count);
     }
 	
-	/* 以下省略一系列根据各种类型数组初始化的构造函数 */
+    /* 以下省略一系列根据各种类型数组初始化的构造函数 */
 			...
 ```
 

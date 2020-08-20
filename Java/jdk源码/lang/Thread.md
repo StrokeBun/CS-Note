@@ -20,26 +20,26 @@ public interface Runnable {
 ### 2. 属性
 
 ``` java
-	// 线程名称
+    // 线程名称
     private volatile String name;
-	// 优先级
+    // 优先级
     private int priority;
-	// 是否是守护线程
+    // 是否是守护线程
     private boolean daemon = false;
-	// JVM 状态
+    // JVM 状态
     private boolean stillborn = false;
-	// 实际被执行的对象
+    // 实际被执行的对象
     private Runnable target;
 
-	// 优先级从1到10，默认为5
+    // 优先级从1到10，默认为5
     public final static int MIN_PRIORITY = 1;
     public final static int NORM_PRIORITY = 5;
     public final static int MAX_PRIORITY = 10;
 
-	// 所属线程组
+    // 所属线程组
     private ThreadGroup group;
 
-   	// 该线程的上下文类加载器
+    // 该线程的上下文类加载器
     private ClassLoader contextClassLoader;
 ```
 
@@ -62,7 +62,7 @@ public interface Runnable {
 ```
 
 ``` java
-	private long tid; // 线程id
+    private long tid; // 线程id
     /* For generating thread ID */
     private static long threadSeqNumber; // 自增创建tid
     private volatile int threadStatus = 0; // 线程状态
@@ -82,7 +82,7 @@ public interface Runnable {
     public Thread(ThreadGroup group, Runnable target) {
         init(group, target, "Thread-" + nextThreadNum(), 0);
     }
-	// 省略其他构造函数
+    // 省略其他构造函数
 ```
 
 ``` java
@@ -182,7 +182,7 @@ public enum State {
 
 ``` java
     // 必须调用start才能创建新线程，只调用run仍在当前线程执行
-	public synchronized void start() {
+    public synchronized void start() {
         
         // 状态必须为 "NEW"
         if (threadStatus != 0)
@@ -215,7 +215,7 @@ public enum State {
 
 ``` java
     // 当前线程执行run()
-	public void run() {
+    public void run() {
         if (target != null) {
             target.run();
         }
@@ -228,14 +228,14 @@ public enum State {
 
 ``` java
     // 获得当前线程
-	public static native Thread currentThread();
-	// 当前线程交出CPU资源，进入RUNNABLE状态，等待系统调度
-	public static native void yield();
+    public static native Thread currentThread();
+    // 当前线程交出CPU资源，进入RUNNABLE状态，等待系统调度
+    public static native void yield();
 	// 线程睡眠，交出CPU，睡眠时间结束之后等待系统调度获得CPU
     public static native void sleep(long millis) throws InterruptedException;
 
 
-	// 中断线程，给线程设置标记，而不是立即停止
+    // 中断线程，给线程设置标记，而不是立即停止
     public void interrupt() {
         // 如果由别的线程对当前线程发起中断
         if (this != Thread.currentThread())
@@ -261,12 +261,12 @@ public enum State {
         join(0);
     }
 	
-	/*
+   /*
     * 使该方法的调用者所在的线程进入 WAITING 或 TIMED_WAITING 状态，
     * 直到当前线程死亡，或者等待超时之后，再去执行调用者线程
     * 相当于当前线程插队
     */
-	public final synchronized void join(long millis) throws InterruptedException {
+    public final synchronized void join(long millis) throws InterruptedException {
         long base = System.currentTimeMillis();
         long now = 0;
 

@@ -6,7 +6,7 @@ ThreadLocal 主要作用是用于数据隔离，使该数据只属于当前线�
 
 ``` java
     // Thread.Class
-	/* ThreadLocal values pertaining to this thread. This map is maintained
+    /* ThreadLocal values pertaining to this thread. This map is maintained
      * by the ThreadLocal class. */
     ThreadLocal.ThreadLocalMap threadLocals = null;
 ```
@@ -17,15 +17,15 @@ Spring 的事务隔离采用了 ThreadLocal，保证单个线程中的数据库�
 
 ``` java
     // 当前ThreadLocal所对应的HashCode
-	private final int threadLocalHashCode = nextHashCode();
-	// 通过AtomicInteger生成HashCode
+    private final int threadLocalHashCode = nextHashCode();
+    // 通过AtomicInteger生成HashCode
     private static AtomicInteger nextHashCode =
         new AtomicInteger();
-	/*
-	 * 当前线程新增一个ThreadLocal，其hashCode会递增一个固定值
-	 * ThreadLocalMap 通过开放寻址解决哈希冲突
-	 * 该值在长度为 2^n 的数组中能尽可能降低哈希冲突
-	 */
+    /*
+     * 当前线程新增一个ThreadLocal，其hashCode会递增一个固定值
+     * ThreadLocalMap 通过开放寻址解决哈希冲突
+     * 该值在长度为 2^n 的数组中能尽可能降低哈希冲突
+     */
     private static final int HASH_INCREMENT = 0x61c88647;
 ```
 
@@ -33,7 +33,7 @@ Spring 的事务隔离采用了 ThreadLocal，保证单个线程中的数据库�
 
 ``` java
     static class ThreadLocalMap {
-		// Entry 是个弱引用，用来优化回收对象
+        // Entry 是个弱引用，用来优化回收对象
         static class Entry extends WeakReference<ThreadLocal<?>> {
             /** The value associated with this ThreadLocal. */
             Object value;
@@ -55,17 +55,17 @@ Spring 的事务隔离采用了 ThreadLocal，保证单个线程中的数据库�
 ```
 
 ``` java
-	/*
-	* ThreadLocal.ThreadLocalMap.getEntry
-	*/
+	/**
+	 * ThreadLocal.ThreadLocalMap.getEntry
+	 */
 	private Entry getEntry(ThreadLocal<?> key) {
         	// 数组固定为 2^n
-            int i = key.threadLocalHashCode & (table.length - 1);
-            Entry e = table[i];
-            if (e != null && e.get() == key)
-                return e;
-            else
-                return getEntryAfterMiss(key, i, e); // 通过开放寻址获得Entry
+        int i = key.threadLocalHashCode & (table.length - 1);
+        Entry e = table[i];
+        if (e != null && e.get() == key)
+            return e;
+        else
+            return getEntryAfterMiss(key, i, e); // 通过开放寻址获得Entry
      }
 
         private Entry getEntryAfterMiss(ThreadLocal<?> key, int i, Entry e) {
@@ -91,9 +91,9 @@ Spring 的事务隔离采用了 ThreadLocal，保证单个线程中的数据库�
 ```
 
 ``` java
-       	/*
-		 * ThreadLocal.ThreadLocalMap.set
-		 */
+        /** 
+         * ThreadLocal.ThreadLocalMap.set
+         */
 		private void set(ThreadLocal<?> key, Object value) {
 
             Entry[] tab = table;
