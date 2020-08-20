@@ -34,7 +34,7 @@
         this.value = value;
     }
 	
-	// 将字符串转化为10进制整数
+    // 将字符串转化为10进制整数
     public Integer(String s) throws NumberFormatException {
         this.value = parseInt(s, 10);
     }
@@ -114,7 +114,7 @@
 
 ``` java
     // Integer i = 10; 调用的是valueOf方法
-	public static Integer valueOf(int i) {
+    public static Integer valueOf(int i) {
         // 在 [low, high]范围的整数，会从缓存中获取
         if (i >= IntegerCache.low && i <= IntegerCache.high)
             return IntegerCache.cache[i + (-IntegerCache.low)];
@@ -167,7 +167,7 @@
 
 ``` java
     // 返回最高位的1的序号
-	public static int highestOneBit(int i) {
+    public static int highestOneBit(int i) {
         // HD, Figure 3-1
         i |= (i >>  1);
         i |= (i >>  2);
@@ -178,7 +178,7 @@
     }
 
 	// 返回最低位的1的序号
-	public static int lowestOneBit(int i) {
+    public static int lowestOneBit(int i) {
         // HD, Section 2-1
         return i & -i;
     }

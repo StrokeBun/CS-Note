@@ -9,10 +9,10 @@ public class Object {
         registerNatives();
     }
 
-   	// 获得当前对象所属类的类对象
+    // 获得当前对象所属类的类对象
     public final native Class<?> getClass();
     
-	// 获得哈希码，默认由地址生成，在hash容器中广泛使用
+    // 获得哈希码，默认由地址生成，在hash容器中广泛使用
     // 原则1: 相等的对象，hashCode返回值必须相同
     // 原则2: 重写equal后必须重写hashCode
     public native int hashCode();
@@ -22,7 +22,8 @@ public class Object {
         return (this == obj);
     }
 
-    /* 浅拷贝，使用时往往需要重写为public形式。
+    /** 
+     * 浅拷贝，使用时往往需要重写为public形式。
      * 注：要求被克隆的对象类实现Cloneable接口 
      */
     protected native Object clone() throws CloneNotSupportedException;
@@ -69,7 +70,8 @@ public class Object {
      *
      * 注：
      * wait方法持有的锁是当前wait所处的上下文的对象（某个栈帧中的对象）
-     * 如果wait持有的锁与当前上下文中的锁不一致，或者wait和notify用的锁不一致，会触发			   InterruptedException
+     * 如果wait持有的锁与当前上下文中的锁不一致，或者wait和notify用的锁不一致，会触抛出
+     * InterruptedException异常
      */
     public final native void wait(long timeout) throws InterruptedException;
 
@@ -95,7 +97,7 @@ public class Object {
         wait(0);
     }
 
-	// 对象在被GC回收后执行的清理操作，只会调用一次，不推荐使用
+    // 对象在被GC回收后执行的清理操作，只会调用一次，不推荐使用
     protected void finalize() throws Throwable { } 
 }
 ```
