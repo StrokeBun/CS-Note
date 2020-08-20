@@ -14,16 +14,16 @@
 
 ``` java
     // 最小值， -2^31
-	@Native public static final int   MIN_VALUE = 0x80000000;
-	// 最大值, 2^31 - 1
+    @Native public static final int   MIN_VALUE = 0x80000000;
+    // 最大值, 2^31 - 1
     @Native public static final int   MAX_VALUE = 0x7fffffff;
-	// int.Class
+    // int.Class
     public static final Class<Integer>  TYPE = (Class<Integer>) 	Class.getPrimitiveClass("int");
-	// 包装的int值
+    // 包装的int值
     private final int value;
-	// 当前类型所占bit数，int固定占32位
+    // 当前类型所占bit数，int固定占32位
     @Native public static final int SIZE = 32;
-	// 当前类型所占字节数，int为4个字节
+    // 当前类型所占字节数，int为4个字节
     public static final int BYTES = SIZE / Byte.SIZE;
 ```
 
