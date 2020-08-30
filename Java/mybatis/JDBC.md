@@ -38,6 +38,8 @@
         conn.close();
 ```
 
+
+
 ### 3. CRUD
 
 java.sql 中有 3 个接口定义了对数据库调用
@@ -211,3 +213,130 @@ Mybatis 的基础实现
   - isAutoIncrement(int column)：指示是否自动为指定列进行编号，这样这些列仍然是只读的。 
 
 ![avatar](img/ResultSetMetaData.png)
+
+
+
+### 4. 批量插入
+
+#### 4.1 批量执行SQL语句
+
+当需要成批插入或者更新记录时，可以采用Java的批量**更新**机制，允许多条语句一次性提交给数据库批量处理。
+
+JDBC的批量处理语句包括下面三个方法：
+
+- **addBatch(String)：添加需要批量处理的SQL语句或是参数；**
+- **executeBatch()：执行批量处理语句；**
+- **clearBatch()：清空缓存的数据**
+
+通常我们会遇到批量执行 SQL 语句的情况：
+
+- 多条 SQL 语句的批量处理
+- 一个 SQL 语句的批量传参
+
+
+
+#### 4.2 高效的批量插入
+
+举例：向数据表中插入20000条数据
+
+```sql
+CREATE TABLE goods(
+id INT PRIMARY KEY AUTO_INCREMENT,
+NAME VARCHAR(20)
+);
+```
+
+##### 4.2.1 实现层次一：使用Statement
+
+```java
+Connection conn = JDBCUtils.getConnection();
+Statement st = conn.createStatement();
+for(int i = 1;i <= 20000;i++){
+	String sql = "insert into goods(name) values('name_' + "+ i +")";
+	st.executeUpdate(sql);
+}
+```
+
+##### 4.2.2 实现层次二：使用PreparedStatement
+
+```java
+Connection conn = JDBCUtils.getConnection();
+		
+String sql = "insert into goods(name)values(?)";
+PreparedStatement ps = conn.prepareStatement(sql);
+for(int i = 1;i <= 20000;i++){
+	ps.setString(1, "name_" + i);
+	ps.executeUpdate();
+}
+				
+JDBCUtils.closeResource(conn, ps);
+```
+
+##### 4.2.3 实现层次三
+
+```java
+/*
+ * 修改1： 使用 addBatch() / executeBatch() / clearBatch()
+ * 修改2：mysql服务器默认是关闭批处理的，我们需要通过一个参数，让mysql开启批处理的支持。
+ * 		 在url中设置rewriteBatchedStatements=true
+ */
+@Test
+public void testInsert1() throws Exception{
+		
+	Connection conn = JDBCUtils.getConnection();
+		
+	String sql = "insert into goods(name)values(?)";
+	PreparedStatement ps = conn.prepareStatement(sql);
+		
+	for(int i = 1;i <= 1000000;i++){
+		ps.setString(1, "name_" + i);
+			
+		//1. 500条执行一次
+		ps.addBatch();
+		if(i % 500 == 0){
+			//2.执行
+			ps.executeBatch();
+			//3.清空
+			ps.clearBatch();
+		}
+	}
+
+	JDBCUtils.closeResource(conn, ps);
+}
+```
+
+##### 4.2.4 实现层次四
+
+```java
+/*
+* 层次四：在层次三的基础上操作
+* 使用Connection 的 setAutoCommit(false)  /  commit()
+*/
+@Test
+public void testInsert2() throws Exception{
+
+	Connection conn = JDBCUtils.getConnection();
+		
+	// 1.设置为不自动提交数据
+	conn.setAutoCommit(false);
+		
+	String sql = "insert into goods(name)values(?)";
+	PreparedStatement ps = conn.prepareStatement(sql);
+		
+	for(int i = 1;i <= 1000000;i++){
+		ps.setString(1, "name_" + i);
+			
+		ps.addBatch();
+		if(i % 500 == 0){
+			ps.executeBatch();
+			ps.clearBatch();
+		}
+	}
+		
+	// 2.提交数据
+	conn.commit();
+		
+	JDBCUtils.closeResource(conn, ps);
+}
+```
+
