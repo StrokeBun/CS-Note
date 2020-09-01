@@ -1,6 +1,8 @@
 [toc]
 
-## Java  IO
+# Java  IO
+
+## 第一部分：IO 基础
 
 ### 1. 概述
 
@@ -201,7 +203,7 @@ fis.close();
 
 ##### 4.2.1 创建流
 
-- `FileReader(File file)`： 给定要读取的File对象。   
+- `FileReader(File file)`： 给定要读取的 File 对象。   
 - `FileReader(String fileName)`： 给定要读取的文件的名称。 
 
 ##### 4.2.2 读取字符
@@ -342,3 +344,159 @@ filename -- a.txt
 length -- 209385038
 location -- D:\a.txt
 ```
+
+
+
+## 第二部分：高级流
+
+### 1. 缓冲流
+
+#### 1.1 概述
+
+缓冲流是对4个基本流的增强，按照数据类型分类：
+
+* **字节缓冲流**：`BufferedInputStream`，`BufferedOutputStream` 
+* **字符缓冲流**：`BufferedReader`，`BufferedWriter`
+
+缓冲流的基本原理，是创建了一个内置的默认大小的缓冲区数组，一次读写一个缓冲区的大小，减少系统IO次数，从而提高读写的效率。
+
+#### 1.2 字节缓冲流
+
+##### 1.2.1 构造函数
+
+``` java
+// 创建字节缓冲输入流
+BufferedInputStream bis = new BufferedInputStream(new FileInputStream("x.txt"));
+// 创建字节缓冲输出流
+BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("x.txt"));
+```
+
+##### 1.2.2 使用
+
+基本 API 与字节流相同
+
+``` java
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            bis = new BufferedInputStream(new FileInputStream("file/DockerToolbox-18.03.0-ce.exe"));
+            bos = new BufferedOutputStream(new FileOutputStream("D:/test.exe"));
+
+            int len = 0;
+            byte[] buffer= new byte[8192]; // 此处设置的数组长度与缓冲区相同
+            while ((len = bis.read(buffer)) != -1) {
+                bos.write(buffer, 0, len);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            // 省略关闭资源的代码
+            ...
+        }
+    }
+```
+
+#### 1.3 字符缓冲流
+
+##### 1.3.1 构造方法
+
+``` java
+// 创建字符缓冲输入流
+BufferedReader br = new BufferedReader(new FileReader("x.txt"));
+// 创建字符缓冲输出流
+BufferedWriter bw = new BufferedWriter(new FileWriter("x.txt"));
+```
+
+##### 1.3.2 特有方法
+
+字符缓冲流除了普通字符流的方法外，还有以下特有方法：
+
+* BufferedReader：`public String readLine()`: 读一行文字，读到文件末尾返回 null 。 
+* BufferedWriter：`public void newLine()`: 写一空行，由系统属性定义符号。 
+
+##### 1.3.3 使用
+
+```java
+public static void main(String[] args) throws IOException {
+    
+    BufferedReader br = new BufferedReader(new FileReader("file/a.txt"));
+    String line  = null;
+  	// 循环读取,读取到最后返回null
+    while ((line = br.readLine())!=null) {
+        System.out.print(line);
+        System.out.println("------");
+    }
+	// 释放资源
+    br.close();
+}
+```
+
+
+### 2. 转换流
+
+#### 2.1 概述
+
+使用`FileReader` 读取文本文件，当编码不统一时，将出现乱码
+
+ Java 引入转换流实现 **字节流** 和 **字符流** 的转换，转换流类型：
+
+- `InputStreamReader`：实现字节流到字符流的转换
+- `OutputStreamWriter`：实现字符流到字节流的转换
+
+<img src="img/转换流.jpg"/>
+
+#### 2.2 InputStreamReader
+
+转换流`java.io.InputStreamReader`，是Reader的子类，FileReader 的父类，是从字节流到字符流的桥梁。它读取字节，并使用指定的字符集将其解码为字符。
+
+##### 2.2.1 构造方法
+
+``` java
+// 创建使用默认字符集的字符流
+InputStreamReader isr = new InputStreamReader(new FileInputStream("in.txt"));
+// 创建使用指定字符集的字符流
+InputStreamReader isr2 = new InputStreamReader(new FileInputStream("in.txt") , "GBK");
+```
+
+##### 2.2.2 使用
+
+``` java
+        String FileName = "file/c.txt";
+        int read;
+
+        // 创建流对象,指定编码
+        InputStreamReader isr = new InputStreamReader
+            (new FileInputStream(FileName) , "GBK");
+        
+        while ((read = isr.read()) != -1) {
+            System.out.print((char)read);
+        }
+        isr.close();
+```
+
+#### 2.3 OutputStreamWriter
+
+转换流`java.io.OutputStreamWriter` ，是Writer的子类，FileWriter 的父类，是从字符流到字节流的桥梁。使用指定的字符集将字符编码为字节。 
+
+##### 2.3.1 构造方法
+
+```java
+// 创建使用默认字符集的字符流
+OutputStreamWriter isr = new OutputStreamWriter(new FileOutputStream("x.txt"));
+// 创建使用指定字符集的字符流
+OutputStreamWriter isr2 = new OutputStreamWriter(new FileOutputStream("out.txt") , "GBK");
+```
+
+##### 2.3.2 使用
+
+``` java
+        String FileName = "x.txt";
+     	// 创建流对象,指定编码
+        OutputStreamWriter osw = new OutputStreamWriter(new             		FileOutputStream(FileName),"GBK");
+      	osw2.write("你好"); // 保存为4个字节
+        osw2.close();
+```
+
