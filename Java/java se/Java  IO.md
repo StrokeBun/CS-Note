@@ -500,3 +500,66 @@ OutputStreamWriter isr2 = new OutputStreamWriter(new FileOutputStream("out.txt")
         osw2.close();
 ```
 
+
+
+### 3. 序列化与反序列化
+
+#### 3.1 概述
+
+Java 提供了一种对象**序列化**的机制，用一个字节序列可以表示一个对象，该字节序列包含该对象的数据、类型和属性，相当于文件中**持久保存**了一个对象的信息。 
+
+反之，该字节序列还可以从文件中读取回来，重构对象，对它进行**反序列化**。
+
+<img src="img/序列化与反序列化.jpg"/>
+
+#### 3.2 序列化
+
+一个对象要想序列化，必须满足两个条件:
+
+* 该类必须实现`java.io.Serializable ` 接口，`Serializable` 是一个标记接口，不实现此接口的类将不会使任何状态序列化或反序列化，会抛出`NotSerializableException` 。
+* 该类的所有属性必须是可序列化的。如果有一个属性不需要可序列化的，需要使用`transient` 关键字修饰。
+
+序列化实现
+
+``` java
+    	Person e = new Person();
+        e.setXXX; // 设置属性
+    	try {
+      		// 创建序列化流对象
+          ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("x.txt"));
+        	// 写出对象
+        	out.writeObject(e);
+        } catch(IOException e)   {
+            e.printStackTrace();
+        } finally {
+            out.close();
+        }
+```
+
+#### 3.3 反序列化
+
+反序列的要求：
+
+- 对于可以反序列化的对象，JVM 需要能够找到 class 文件，否则抛出`ClassNotFoundException` 异常。
+- class 文件在序列化对象后没有发生修改，否则反序列化将失败，抛出 `InvalidClassException`异常。`Serializable` 接口给需要序列化的类，提供了一个序列版本号 `serialVersionUID`，用于验证序列化的对象和对应类是否匹配
+
+反序列化实现：
+
+``` java
+        Person e = null;
+        try {		
+             // 创建反序列化流
+             FileInputStream fileIn = new FileInputStream("x.txt");
+             ObjectInputStream in = new ObjectInputStream(fileIn);
+             // 读取一个对象
+             e = (Person) in.readObject();
+        } catch (IOException e) {
+             e.printStackTrace();
+        } catch (ClassNotFoundException e)  {
+             e.printStackTrace();
+        } finally {
+            // 释放资源
+            ... 
+        }
+```
+
