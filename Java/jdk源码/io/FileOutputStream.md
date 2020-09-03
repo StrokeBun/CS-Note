@@ -25,6 +25,7 @@ FileOutputStream 的继承体系
     // 文件路径，如果使用FileDescriptor的构造函数则为null
     private final String path;
 
+    // 关闭时的锁
     private final Object closeLock = new Object();
     private volatile boolean closed = false;
 ```
