@@ -74,11 +74,11 @@ struct tast_struct {
     unsigned int flags;
     /* 调度相关 */
     int	on_rq; // 是否在运行队列上
-    // 优先级
-    int prio;
-    int	static_prio;
+    // 优先级 
+    int prio; // 动态优先级
+    int	static_prio; // 静态优先级
     int	normal_prio;
-    unsigned int rt_priority;
+    unsigned int rt_priority; // 实时优先级
     // 调度实体
     struct sched_entity	se;
     struct sched_rt_entity rt;
@@ -120,3 +120,21 @@ struct thread_info {
 
 ### 4. 进程调度
 
+Linux的进程是抢占式的，并通过 **时间分片** 运行
+
+进程分类：
+
+- 实时进程：实时优先级在 0 - 99，数值越小，优先级越高
+- 普通进程：静态/动态优先级在 100 - 139，静态优先级越小，分配的时间片越大
+
+**完全公平调度算法 CFS** ：
+
+- 每一个进程都有一个虚拟运行时间 vruntime，进程运行时 vruntime 不断增大，vruntime 与进程实际运行时间相关，但需要再权重(权重与进程的优先级成正比)，所以优先级高的进程 vruntime 会增加的更慢，每次选择 vruntime 最小的进程运行。
+
+- CFS 队列采用**红黑树**实现，因为 vruntime 一直改变，一经改变就需要排序
+
+- 红黑树存储在 struct rq 结构中，每个 CPU 都有自己的 rq，一个实时进程队列 rt_rq 和一个 CFS 运行队列 cfs_rq，优先在 rt_rq 中进行调度
+
+<img src="img/进程调度数据结构.jpg" />
+
+<img src="img/调度.jpg" />
