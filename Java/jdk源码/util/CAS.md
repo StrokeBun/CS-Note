@@ -20,7 +20,7 @@ sun.misc.Unsafe 提供了 CAS 支持
     * var4: 期望值A
     * var5: 新值B
     */
-	public final native boolean compareAndSwapObject(Object var1, long var2, Object var4, Object var5);
+    public final native boolean compareAndSwapObject(Object var1, long var2, Object var4, Object var5);
 
     public final native boolean compareAndSwapInt(Object var1, long var2, int var4, int var5);
 
