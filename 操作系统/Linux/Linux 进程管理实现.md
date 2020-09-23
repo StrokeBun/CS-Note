@@ -138,3 +138,72 @@ Linux的进程是抢占式的，并通过 **时间分片** 运行
 <img src="img/进程调度数据结构.jpg" />
 
 <img src="img/调度.jpg" />
+
+### 5. 创建
+
+#### 5.1 进程创建
+
+Linux 中进程的创建通过系统调用 fork 实现，fork 调用相应的 _do_fork
+
+``` c
+SYSCALL_DEFINE0(fork)
+{
+......
+	return _do_fork(SIGCHLD, 0, 0, NULL, NULL, 0);
+}
+
+long _do_fork(unsigned long clone_flags,
+	      unsigned long stack_start,
+	      unsigned long stack_size,
+	      int __user *parent_tidptr,
+	      int __user *child_tidptr,
+	      unsigned long tls)
+{
+	struct task_struct *p;
+	int trace = 0;
+	long nr;
+ 
+ 
+......
+    /**
+     * copy_process主要进行下述工作:
+     * 1. 分配task_struct结构，创建内核栈，设置thread_info
+     * 2. 复制父进程的权限
+     * 3. 设置调度相关。设置状态为TASK_NEW，初始化优先级、调度类
+     * 4. 处理文件系统相关。复制父进程打开的文件信息
+     * 5. 处理信号相关
+     * 6. 复制进程内存空间
+     * 7. 初始化pid、tid、group_leader，建立进程亲缘关系
+     */
+	p = copy_process(clone_flags, stack_start, stack_size,
+			 child_tidptr, NULL, trace, tls, NUMA_NO_NODE);
+......
+	if (!IS_ERR(p)) {
+......
+        /**
+         * wake_up_new_task唤醒新进程，主要工作：
+         * 1. 设置状态为TASK_RUNNING，将该任务插入调度队列
+         * 2. 尝试抢占CPU
+         */
+		wake_up_new_task(p);
+......
+		put_pid(pid);
+	} 
+```
+
+#### 5.2 线程创建
+
+线程创建通过 pthread_create 实现，该函数是 Glibc 的一个函数，而不是系统调用
+
+该函数的主要工作：
+
+- 用户态：
+  - 设置线程属性，创建用户态线程结构 pthread
+  - 创建线程栈
+- 内核态：
+  - 设置调度策略
+  - 通过 create_thread 创建线程，调用 _do_fork，与进程创建不同的是，线程不再创建一系列结构，而是直接使用该进程的资源
+
+**总结**
+
+<img src="img/进程与线程的创建过程.png" />
