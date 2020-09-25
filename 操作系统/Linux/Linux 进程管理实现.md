@@ -42,6 +42,8 @@ Linux 的二进制程序格式为 **ELF**，可分为
 - TASK_STOPPED：接收到 SIGSTOP、SIGTSTP、SIGTTIN、SIGTTOU 信号进入该状态
 - TASK_TRACED：被 debugger 等进程监视会进入该状态
 
+<img src="img/进程状态机.jpg" style="zoom:60%" />
+
 用户态进程的顶级父进程为 **systemd** 进程，内核态进程的顶级父进程为 **kthreadd** 进程
 
 <img src="img/进程树.jpg" style="zoom:80%" />
@@ -143,7 +145,7 @@ Linux的进程是抢占式的，并通过 **时间分片** 运行
 
 #### 5.1 进程创建
 
-Linux 中进程的创建通过系统调用 fork 实现，fork 调用相应的 _do_fork
+Linux 中进程的创建通过系统调用 fork 实现，fork 调用相应的 _do_fork，采用 **copy-on-write 写时拷贝** 技术，新建进程后共享同一个资源，当发生写入时才进行内存复制
 
 ``` c
 SYSCALL_DEFINE0(fork)
@@ -167,7 +169,7 @@ long _do_fork(unsigned long clone_flags,
 ......
     /**
      * copy_process主要进行下述工作:
-     * 1. 分配task_struct结构，创建内核栈，设置thread_info
+     * 1. 调用dup_task_struct()创建struct_task、内核栈，设置thread_info
      * 2. 复制父进程的权限
      * 3. 设置调度相关。设置状态为TASK_NEW，初始化优先级、调度类
      * 4. 处理文件系统相关。复制父进程打开的文件信息
