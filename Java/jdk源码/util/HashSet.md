@@ -39,6 +39,11 @@ HashSet 通过委托模式将数据交予 HashMap 处理， key 为要添加到 
     public HashSet(int initialCapacity) {
         map = new HashMap<>(initialCapacity);
     }
+
+    // 用于LinkedHashSet的初始化，无法被外部调用
+    HashSet(int initialCapacity, float loadFactor, boolean dummy) {
+        map = new LinkedHashMap<>(initialCapacity, loadFactor);
+    }
 ```
 
 ### 4. 常用操作
