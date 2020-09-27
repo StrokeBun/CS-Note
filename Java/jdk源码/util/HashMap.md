@@ -48,7 +48,7 @@
       transient Node<K,V>[] table; // Node 数组
       transient int size; // 当前Node个数
       transient int modCount; // 当前结构修改次数
-  	int threshold; // 扩容阈值，元素格式超过阈值进行扩容
+  	int threshold; // 扩容阈值，元素个数(不是已使用的桶个数)超过阈值进行扩容
   	final float loadFactor; // 负载因子，用于计算 threshold
   ```
 
