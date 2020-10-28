@@ -1,6 +1,20 @@
 ## Git
 
-### 1. git h基础
+### 1. git 基础
+
+git 的文件生命周期
+
+<img src="img/文件生命周期.jpg"/>
+
+基本指令
+
+``` bash
+git status: 查看当前文件状态
+git diff： 查看修改
+git rm:
+```
+
+
 
 git结构：
 
