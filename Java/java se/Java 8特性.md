@@ -300,3 +300,33 @@ optCar.get();
 optional.orElse("fallback");   
 ```
 
+#### 3.4 组合式异步编程接口 CompletableFuture
+
+待续。。。
+
+#### 3.5 新的日期API
+
+Java 8 引入了新的日期 API，分别是
+
+- LocalDate：提供了简单的日期功能。
+
+  ``` java
+  LocalDate date = LocalDate.of(2020, 11, 11);        
+  System.out.println(date.toString()); // 2020-11-11        
+  System.out.println(LocalDate.now()); // 2020-11-14
+  ```
+
+- LocalTime：提供了一天内时间功能。
+
+- LocalDateTime：合并了日期与时间。
+
+  ``` java
+  LocalDateTime dt = LocalDateTime.of(2020, Month.NOVEMBER, 11, 9, 0, 0);
+  System.out.println(dt.toString()); // 2020-11-11T09:00
+  ```
+
+- Instant：机器的时间秒数。
+
+- Duration
+
+- Period
