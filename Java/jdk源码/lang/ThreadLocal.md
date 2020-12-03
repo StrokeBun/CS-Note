@@ -2,7 +2,9 @@
 
 ### 1. 介绍
 
-ThreadLocal 主要作用是用于数据隔离，使该数据只属于当前线程，在多线程环境中，可以防止自己的变量被修改，每个 Thread 中保存了一个 ThreadLocal.ThreadLocalMap 用于储存该线程的多个 ThreadLocal 对象
+ThreadLocal 可以让一个变量在多个线程中独立，进行数据隔离，使该数据只属于当前线程，防止自己的变量被修改，每个 Thread 中保存了一个 ThreadLocal。
+
+ThreadLocalMap 用于储存该线程的多个 ThreadLocal 对象。
 
 ``` java
     // Thread.Class
@@ -11,7 +13,7 @@ ThreadLocal 主要作用是用于数据隔离，使该数据只属于当前线�
     ThreadLocal.ThreadLocalMap threadLocals = null;
 ```
 
-Spring 的事务隔离采用了 ThreadLocal，保证单个线程中的数据库操作使用的同一个数据库连接
+使用场景：静态变量需要与线程状态关联并互相独立，Spring 的事务隔离采用了 ThreadLocal，保证单个线程中的数据库操作使用的同一个数据库连接。
 
 ### 2. 属性
 
