@@ -8,7 +8,7 @@ synchronized 是 java 中的可重入悲观锁，在 jdk 1.6引入了偏向锁�
 
 **可重入锁**：又称递归锁，线程在递归调用时，外层方法获取锁后，进入内层会自动获得锁
 
-![](img/java monitor.jpg)
+![](img/monitor.jpg)
 
 synchronized 的三种加锁方式
 
