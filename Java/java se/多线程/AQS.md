@@ -129,7 +129,7 @@ final boolean acquireQueued(final Node node, int arg) {
 }
 ```
 
-![](img/aqs acquire流程.png)
+![](img/acquire流程.png)
 
 #### 3.2 释放资源
 
