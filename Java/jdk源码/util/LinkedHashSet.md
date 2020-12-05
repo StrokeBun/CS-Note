@@ -2,7 +2,20 @@
 
 ### 1. 介绍
 
-`java.util.LinkedHashSet` 会维护插入顺序，内部采用 `LinkedHashMap` 存储和处理元素
+`java.util.LinkedHashSet` 会维护插入顺序，内部采用 `LinkedHashMap` 存储和处理元素 
+
+``` java
+public LinkedHashSet(int initialCapacity, float loadFactor) {
+    super(initialCapacity, loadFactor, true);
+}
+
+// 上述super调用的构造方法
+HashSet(int initialCapacity, float loadFactor, boolean dummy) {
+    map = new LinkedHashMap<>(initialCapacity, loadFactor);
+}
+```
+
+
 
 继承体系如下
 
