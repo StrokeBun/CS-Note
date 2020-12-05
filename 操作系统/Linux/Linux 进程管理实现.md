@@ -4,13 +4,13 @@
 
 代码到进程的演变过程
 
-<img src="img/代码到进程的演变过程.jpg" style="zoom:60%" />
+![](img/代码到进程的演变过程.jpg)
 
 Linux 的二进制程序格式为 **ELF**，可分为
 
 - 可重定位文件：中间文件，链接之后形成可执行文件
 
-  <img src="img/可重定位文件ELF格式.jpg" style="zoom:80%" />
+  ![](img/可重定位文件ELF格式.jpg)
 
   文件格式
 
@@ -23,7 +23,7 @@ Linux 的二进制程序格式为 **ELF**，可分为
 
 - 可执行文件：可执行文件中的各个段由多个可重定位文件链接而来，载入内存后即可运行
 
-  <img src="img/可执行文件ELF格式.jpg" style="zoom:80%" />
+  ![](img/可执行文件ELF格式.jpg)
 
 - 共享对象文件/动态链接库：静态库代码段被多个程序使用将在内存中产生多个副本，动态链接库通过 **在内存中保存库的引用** 解决该问题
 
@@ -42,15 +42,15 @@ Linux 的二进制程序格式为 **ELF**，可分为
 - TASK_STOPPED：接收到 SIGSTOP、SIGTSTP、SIGTTIN、SIGTTOU 信号进入该状态
 - TASK_TRACED：被 debugger 等进程监视会进入该状态
 
-<img src="img/进程状态机.jpg" style="zoom:60%" />
+![](img/进程状态机.jpg)
 
 用户态进程的顶级父进程为 **systemd** 进程，内核态进程的顶级父进程为 **kthreadd** 进程
 
-<img src="img/进程树.jpg" style="zoom:80%" />
+![](img/进程树.jpg)
 
 #### 2.2 线程
 
-<img src="img/线程的创建与运行过程.jpg" style="zoom:75%" />
+![](img/线程的创建与运行过程.jpg)
 
 线程数据类型：
 
@@ -114,9 +114,9 @@ struct thread_info {
 
 内核栈结构如下，pt_regs 即为进入内核态时保存的寄存器信息
 
-<img src="img/内核栈结构.jpg" style="zoom:60%"/>
+![](img/内核栈结构.jpg)
 
-<img src="img/进程数据结构.jpg" style="zoom:90%"/>
+![](img/进程数据结构.jpg)
 
 
 
@@ -137,9 +137,9 @@ Linux的进程是抢占式的，并通过 **时间分片** 运行
 
 - 红黑树存储在 struct rq 结构中，每个 CPU 都有自己的 rq，一个实时进程队列 rt_rq 和一个 CFS 运行队列 cfs_rq，优先在 rt_rq 中进行调度
 
-<img src="img/进程调度数据结构.jpg" />
+![](img/进程调度数据结构.jpg)
 
-<img src="img/调度.jpg" />
+![](img/调度.jpg)
 
 ### 5. 创建
 
@@ -208,4 +208,4 @@ long _do_fork(unsigned long clone_flags,
 
 **总结**
 
-<img src="img/进程与线程的创建过程.png" />
+![](img/进程与线程的创建过程.png)
