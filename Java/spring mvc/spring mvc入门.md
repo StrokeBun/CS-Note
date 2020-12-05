@@ -199,4 +199,4 @@ public class MyExceptionResolver implements HandlerExceptionResolver {
 
 ### x. 整体结构介绍
 
-<img src="img/spring mvc 主要servlet.jpg" />
+![](img/主要servlet.jpg)

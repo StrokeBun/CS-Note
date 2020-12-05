@@ -2,7 +2,7 @@
 
 ### 1. 继承体系
 
-<img src="img/LinkedList继承体系.jpg" style="zoom:70%"/>
+![](img/LinkedList继承体系.jpg)
 
 ### 2. 属性
 

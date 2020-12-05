@@ -8,7 +8,7 @@ Vector 是线程安全的自动扩容数组，其线程安全性通过 synchroni
 
 #### 1.2 继承体系
 
-<img src="img/Vector继承体系.jpg" style="zoom:70%" />
+![](img/Vector继承体系.jpg)
 
 ### 2. 属性
 

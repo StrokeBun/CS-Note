@@ -26,7 +26,7 @@
 
 ##### 1.2.2 核心要素
 
-代理类和目标类**<font color=blue>实现共同的接口</font>**
+代理类和目标类 **<font color=blue>实现共同的接口</font>**
 
 例如 Thread 就是代理类，实现了 Runnable 接口，核心功能即 run() 方法，额外功能即线程创建等功能
 
@@ -302,7 +302,7 @@ CGlib 可以为没实现任何接口的原始类创建代理类，通过**<font 
 
 通过原对象的 id 获得的是代理类对象，原因是 <font color=blue>Spring 在 BeanPostProcessor 中将原对象作为 postProcessAfterInitialization(Object, String)方法的第一个参数，通过动态代理获得代理类</font>
 
-<img src="img/spring加工代理对象.jpg"/>
+![](img/spring加工代理对象.jpg)
 
 ### 5. 基于注解的 AOP 编程
 

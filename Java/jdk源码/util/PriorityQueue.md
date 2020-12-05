@@ -8,7 +8,7 @@
 
 继承体系
 
-<img src="img/PriorityQueue继承体系.jpg" style="zoom:80%"/>
+![](img/PriorityQueue继承体系.jpg)
 
 ### 2. 属性
 

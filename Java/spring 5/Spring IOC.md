@@ -152,7 +152,7 @@ Spring 的配置文件
 
   Spring 工厂可以通过调用**私有**的构造函数创建对象，反射面前无私有
 
-  <img src="img/spring工厂简单流程.jpg" alt="avatar" style="zoom:70%">
+  ![](img/spring工厂简单流程.jpg)
 
 ### 3. 注入
 
@@ -291,7 +291,7 @@ Spring 的配置文件
 
 原先的成员赋值由代码实现
 
-<img src="img/原先的代码控制.jpg" alt="avatar">
+![](img/原先的代码控制.jpg)
 
 Spring 将成员赋值的控制权交给 **配置文件 + Spring 工厂**，只需更改配置文件，无需改动代码，**无需重新编译**
 
@@ -554,7 +554,7 @@ Spring 工厂创建对象后调用对象的初始化方法
 
 注入发生在 1 与 2 之间
 
-<img src="img/对象的生命周期.jpg" alt="avatar">
+![](img/对象的生命周期.jpg)
 
 
 
