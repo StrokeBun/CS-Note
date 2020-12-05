@@ -120,7 +120,7 @@ Apple a1 = c1.get();
 
 流可以构造操作流水线，实现函数式编程，不需要操作线程和锁就能并行处理数据。
 
-<img src="img/java流.jpg">
+<img src="img/java流.JPG">
 
 ```java
 // 使用集合外部迭代
@@ -276,7 +276,7 @@ Optional 用于解决对于 NPE 麻烦的防御式检查。注意，**Optional �
 
 变量存在时，Optional 只是对类简单包装，不存在时则返回 Optional.empty()
 
-<img src="img/Optional示意.jpg">
+<img src="img/Optional示意.JPG">
 
 创建 Optional 对象
 
