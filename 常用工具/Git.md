@@ -4,7 +4,7 @@
 
 git 的文件生命周期
 
-<img src="img/文件生命周期.jpg"/>
+![](img/文件生命周期.jpg)
 
 本地基本指令
 
@@ -36,7 +36,7 @@ git remote rename or origin：重命名
 
 **<font color=red>HEAD指向当前正在工作的本地分支</font>**
 
-<img src="img/git分支本质.jpg" style="zoom:70%">
+![](img/git分支本质.jpg)
 
 git 分支指令
 
@@ -62,11 +62,11 @@ git结构：
 - 目录树：图中 master 所代表部分
 - objects：git 的对象库
 
-<img src="img/git结构.jpg" style="zoom:90%"/>
+![](img/git结构.jpg)
 
 版本库的具体实现，master 指向最新的提交，HEAD 指向当前工作分支的最新提交
 
-<img src="img/git版本库.jpg" style="zoom:90%">
+![](img/git版本库.jpg)
 
 操作对 git 结构的影响：
 
