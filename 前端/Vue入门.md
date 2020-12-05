@@ -20,7 +20,7 @@ Vue 针对 HTML + CSS + JS： 视图层
 
 Vue 基于 **MVVM** 模式，使用 **观察者** 模式实现
 
-![avatar](img/mvvm.jpg)
+![](img/mvvm.jpg)
 
 ``` javascript
 // 第一个程序
