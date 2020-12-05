@@ -19,9 +19,7 @@
 
 #### 1.2 调用 UDP
 
-
-
-<img src="img/socket的UDP通信.jpg" alt="avatar" style="zoom:50%;" />
+![](img/socket的UDP通信.jpg)
 
 UDP 因为无连接，故不需要 connet() 和 accept()，通信时，调用 sendto() 和 recvfrom()，都要传入 IP 地址和端口
 
@@ -55,7 +53,7 @@ UDP 因为无连接，故不需要 connet() 和 accept()，通信时，调用 se
 
 #### 2.5 异步 I/O
 
-<img src="img/异步IO.jpg" alt="avatar" style="zoom:75%;" />
+![](img/异步IO.jpg)
 
 进程执行 aio_read 系统调用，内核立即返回，进程不会阻塞，内核在 I/O 完成之后向进程发送信号。
 
