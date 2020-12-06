@@ -68,7 +68,7 @@ public class BeanFactory {
 
 ``` java
 public class BeanFactory {
-    private static Prorerties env = new Prorerties();
+    private static Properties env = new Properties();
     // 使用静态代码块来读入配置文件
     static {
         InputStream inputStream = BeanFactory.class.
