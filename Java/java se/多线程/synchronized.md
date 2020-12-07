@@ -72,9 +72,9 @@ JVM 底层使用 Atomic::cmpxchg_ptr 尝试把 monitor 的 _owner 字段设置�
 - 对象 Mark Word 记录线程 ID
 - 进入偏向状态
 
-当有线程竞争偏向锁，并且发现线程 ID 不是自身的话，将尝试获取锁
+当有线程竞争偏向锁，并且发现线程 ID 不是自身的话，将使用 CAS 替换 Mark Word 尝试获取锁
 
-- 获取成功，更改对象 Mark Word 的线程 ID，保持偏向状态
+- 获取成功，更改对象 Mark Word 的线程 ID，**保持偏向状态**
 - 获取失败，升级为轻量级锁
 
 ![](img/偏向锁流程.png)
