@@ -16,6 +16,24 @@ synchronized 的三种加锁方式
 - 静态方法，相当于给**类对象**加锁
 - 代码块，需要指定加锁对象，对**给定对象**加锁
 
+例如以下方式将导致并发问题
+
+``` java
+class SafeCalc {
+  static long value = 0L;
+  // 实例对象锁
+  synchronized long get() {
+    return value;
+  }
+  // 类锁,两者不互斥
+  synchronized static void addOne() {
+    value += 1;
+  }
+}
+```
+
+
+
 ### 2. 原理
 
 #### 2.1 JVM 层次
