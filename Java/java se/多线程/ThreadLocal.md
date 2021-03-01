@@ -13,6 +13,8 @@ ThreadLocalMap 用于储存该线程的多个 ThreadLocal 对象。
     ThreadLocal.ThreadLocalMap threadLocals = null;
 ```
 
+ThreadLocal 不支持继承性，即父线程设置的在子线程无法获取；如果需要继承性则使用 InheritableThreadLocal。
+
 使用场景：静态变量需要与线程状态关联并互相独立，Spring 的事务隔离采用了 ThreadLocal，保证单个线程中的数据库操作使用的同一个数据库连接。
 
 ### 2. 属性
