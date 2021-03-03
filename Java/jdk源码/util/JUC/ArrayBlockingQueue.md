@@ -1,6 +1,6 @@
 ## ArrayBlockingQueue
 
-### 1. 介绍
+### 1. 概述
 
 #### 1.1 介绍
 
