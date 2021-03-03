@@ -147,7 +147,7 @@ private static class Node<E> {
                         updateHead(h, ((q = p.next) != null) ? q : p);
                     return item;
                 }
-                // 当前空队列，则返回null
+                // 当前空队列，则返回 null
                 else if ((q = p.next) == null) {
                     updateHead(h, p);
                     return null;
