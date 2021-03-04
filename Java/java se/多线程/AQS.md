@@ -6,6 +6,10 @@
 
 ![](img/aqs存储方式.png)
 
+内部类 `ConditionObject` 用于实现条件变量，每个条件变量对应一个条件队列（单向链表），内部存储调用了条件变量 await 方法后被阻塞的线程。当其他调用 signal 方法后，内部会把条件队列里面队头的一个线程节点移除后放到 AQS 的阻塞队列中，然后激活这个线程。 
+
+<img src="img/aqs举例.jpg" style="zoom:50%">
+
 ### 2. Node 节点
 
 资源有两种同步方式：
@@ -29,7 +33,7 @@ static final class Node {
     // waitStatus的值，表示该结点（对应的线程）在等待某一条件
     static final int CONDITION = -2;
     /** 
-     * waitStatus的值，表示有资源可用，新head结点需要继续唤醒后继结点（共享模式下，多线程并      * 发释放资源，而head唤醒其后继结点后，需要把多出来的资源留给后面的结点；设置新的head结点      * 时，会继续唤醒其后继结点）
+     * waitStatus的值，表示有资源可用，新head结点需要继续唤醒后继结点（共享模式下，多线程并        * 发释放资源，而head唤醒其后继结点后，需要把多出来的资源留给后面的结点；设置新的head结点      * 时，会继续唤醒其后继结点）
      */
     static final int PROPAGATE = -3;
 
@@ -75,7 +79,7 @@ static final class Node {
 
 ### 3.源码解析
 
-AQS的设计是基于**模板方法模式**的，子类要实现的方法主要有：
+AQS的设计是基于**模板方法模式** 的，子类要实现的方法主要有：
 
 - isHeldExclusively()：该线程是否正在独占资源，只有用到condition才需要去实现它；
 - tryAcquire(int)：独占方式。尝试获取资源，成功则返回true；
@@ -138,7 +142,7 @@ final boolean acquireQueued(final Node node, int arg) {
         if (tryRelease(arg)) {
             Node h = head;
             if (h != null && h.waitStatus != 0)
-                unparkSuccessor(h); // 唤醒后继节点
+                unparkSuccessor(h); // 唤醒后继节点，即唤醒一个阻塞的线程
             return true;
         }
         return false;
