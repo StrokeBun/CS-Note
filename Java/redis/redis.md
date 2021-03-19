@@ -8,12 +8,12 @@
 
 数据库演进：
 
-- 90 年代，因为访问量低，使用的是单机数据库
+- 访问量低，使用的是单机数据库
 - Memcached ( 缓存 )  + MySQL + 垂直拆分，进行读写分离
 - 分库分表 + 水平拆分 + MySQL 集群
 - 如今数据类型多且数据量大，MySQL 等关系型数据库表很大，效率较低；需要使用 NoSQL 进行改进
 
-<img src="img/当今网站架构.jpg"  />
+<img src="img/当今网站架构.jpg" style="zoom:50%"  />
 
 #### 1.2 什么是 NoSQL
 
@@ -47,7 +47,7 @@ NoSQL 特点：
 
 
 
-### 2. Redis 入门
+### 2. Redis 介绍
 
 #### 2.1 概述
 
@@ -55,8 +55,7 @@ Redis ( Remote Dictionary Server )，远程字典服务
 
 主要作用：
 
-- 内存存储，断电即失，但 Redis 支持持久化
-- 用于高速缓存
+- 用于高速缓存，使用内存存储，断电即失，但 Redis 支持持久化
 - 消息中间件，发布订阅系统
 - 地图信息分析
 - 计数器，例如微信文章浏览量
@@ -91,7 +90,7 @@ Redis ( Remote Dictionary Server )，远程字典服务
 
 #### 3.1 String
 
-##### 3.1.1 基础命令
+字符串，常见用途是存储序列化后的用户信息
 
 ``` markdown
 1. APPEND key str ---> 追加字符串，如果key不存在，则新建
@@ -105,36 +104,9 @@ Redis ( Remote Dictionary Server )，远程字典服务
 9. mset/msetnx k1 v1 k2 v2 ---> 设置多个k/v，msetnx是原子操作，只能一起成功或者一起失败
 ```
 
-##### 3.1.2 底层实现
-
-```c
-struct sdshdr {
-    // buf数组已使用的字节数
-    int len;
-    // buf数组未使用的字节数
-    int free;
-    char buf[];
-}
-```
-
-sdshdr 相比 C 字符串的优势：
-
-- 计数方式不同，C 字符串获取长度时间复杂度 O(n)，
-
-  sdshdr 为 O(1)，返回 len + free
-
-- 杜绝了缓冲区溢出
-
-- 加入了**空间预分配**和**惰性空间释放**
-
-  - 空间预分配：对 sdshdr 拓展时，会分配多余的 free空间 + 1 byte，其余 1 byte 用于存空字符
-  - 惰性空间释放：sdshdr 缩减后，不会立即回收多余空间
-
-- 二进制安全，对于二进制文件中存在 '\0' , C 字符串会截断，sdshdr 则不存在这个问题
-
 #### 3.2 List
 
-List 常用于消息队列
+List 即链表，常用于消息队列
 
 **基本命令**
 
@@ -150,13 +122,9 @@ List 常用于消息队列
 
 ```
 
-
-
-
-
 #### 3.3 Set
 
-可以实现关注用户、共同关注等功能
+即集合，实现集合交并操作
 
 **基本命令**
 
@@ -172,15 +140,9 @@ List 常用于消息队列
 	- 并集: SUNION set1 set2
 ```
 
-
-
-
-
 #### 3.4 Hash
 
-Hash 类似 String，只不过 key-value 变为 key-map 
-
-常用于存储对象
+Hash 即字典，类似 java 中的 HashMap
 
 **基本命令**
 
@@ -192,10 +154,6 @@ Hash 类似 String，只不过 key-value 变为 key-map
 5. hlen myhash ---> 获取字段数量
 
 ```
-
-
-
-
 
 #### 3.5 Zset
 
@@ -222,8 +180,6 @@ Hash 类似 String，只不过 key-value 变为 key-map
 5. georadiusbymember table place 半径 单位 ---> 以所给位置为圆心，获得在半径范围内的位置
 ```
 
-
-
 #### 4.2 Hyperloglog
 
 基数：一个数据集里不重复元素的个数
@@ -239,11 +195,7 @@ redis 2.8.9 加入了 hyperloglog，用来进行基数统计，其优点是占�
 3. PFMERGE dist mykey1 mykey2... ---> 合并多个hyperloglog
 ```
 
-
-
 #### 4.3 Bitmaps
-
-针对于两个状态数据的存储
 
 ``` markdown
 常用命令
@@ -285,19 +237,9 @@ redis 使用 watch 命令可以实现乐观锁
 
 
 
-### 6. Jedis
-
-jedis 的操作与命令相同
-
-``` java
-Jedis jedis = new Jedis("127.0.0.1", 6379);
-jedis.flushDB();
-jedis.set("k1", "bzzb");
-```
 
 
-
-### 7. Springboot 整合redis
+### 6. Springboot 整合redis
 
 springboot 2.x 之后，使用了 lettuce 替换了 jedis
 
@@ -319,7 +261,7 @@ redisTemplate.opsForValue().set("k1", "v1");
 
 
 
-### 8. Redis 配置文件详解
+### 7. Redis 配置文件详解
 
 - 网络
 
@@ -378,11 +320,11 @@ redisTemplate.opsForValue().set("k1", "v1");
 
 
 
-### 9. Redis 持久化
+### 8. Redis 持久化
 
 如果仅做缓存使用，则不需要进行持久化
 
-#### 9.1 RDB
+#### 8.1 RDB
 
 触发时机
 
@@ -402,7 +344,7 @@ redisTemplate.opsForValue().set("k1", "v1");
 - 需要一定时间进程才能操作，redis 挂了的话，最后一次修改数据的操作丢失
 - fork 进程的时候占用较大内存
 
-#### 9.2 AOF
+#### 8.2 AOF
 
 以日志的形式记录每个写操作，只许追加不允许修改
 
@@ -418,7 +360,7 @@ redisTemplate.opsForValue().set("k1", "v1");
 
 
 
-### 10. 缓存穿透和雪崩
+### 9. 缓存穿透和雪崩
 
 缓存穿透
 
