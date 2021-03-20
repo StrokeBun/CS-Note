@@ -149,3 +149,89 @@ rehash 条件：
 
 
 
+### 4. 跳跃表
+
+跳表是一种有序数据结构，在大部分情况下查找效率与平衡搜索树相近。
+
+跳跃表在 redis 中的主要应用是实现有序集合 key
+
+
+
+### 5. intset
+
+intset 用于保存整数值的集合，可以保存 int16_t、int32_t、int64_t 的整数值
+
+``` c
+typedef struct intset {
+    // 编码方式
+    uint32_t encoding;
+    // 包含元素个数
+    uint32_t length;
+    // 存储元素的数组
+    int8_t contents[];
+} intset;
+```
+
+intset 的插入可能会触发升级
+
+- 升级
+  - 触发条件：添加的新元素超过当前类型能表示的范围（过大或者过小），则会触发升级
+  - 过程：根据新元素类型拓展数组，并转换原有元素，之后添加新元素（只会放在最后或者 0 号位置）
+  - 自动升级的优点：灵活，节省内存
+
+
+
+### 6. ziplist
+
+压缩列表 ziplist 是 redis 早期版本的列表键和哈希键的底层实现，当列表存在少量元素且都是小对象时使用 ziplist 存储，现使用 quicklist 代替。
+
+
+
+### 7. 对象
+
+redis 使用对象表示 key 和 value，key 固定为字符串，value 则为五大基本类型
+
+``` c
+typedef struct redisObject {
+    // 类型，为string、list、hash、set、zset基本类型中的一个
+    unsigned type:4;
+    // 编码格式
+    unsigned encoding:4;
+    // 指向底层实现的数据结构
+    void *ptr;
+    // 引用计数
+    int refcount;
+} robj;
+```
+
+#### 7.1 对象编码
+
+- 字符串对象
+  - int：保存的整数值
+  - raw：保存字符串且长度大于 32 字节，使用 sdshdr 存储
+  - embstr：保存字符串且长度小于等于 32 字节，使用 sdshdr 存储，但 redisObject 和 sdshdr 两个结构存放在连续的内存，提高申请和释放的效率
+- 列表对象
+  - ziplist：即使用压缩链表存储
+  - linkedlist：使用双端链表实现，并且每个节点中存储了一个字符串对象 sdshdr，sdshdr 里存放真正的元素
+- 哈希对象
+  - ziplist
+  - hashtable：key、value 都使用字符串对象 sdshdr 存储
+- 集合对象
+  - intset
+  - hashtable：类型 `java.util.HashMap`，key 使用字符串对象存储，value 设置为 NULL
+- 有序集合对象
+  - ziplist
+  - skiplist：使用跳表存储元素，使用字典存储元素和优先级，实现 O(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
