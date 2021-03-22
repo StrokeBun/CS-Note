@@ -221,7 +221,7 @@ typedef struct redisObject {
   - hashtable：类型 `java.util.HashMap`，key 使用字符串对象存储，value 设置为 NULL
 - 有序集合对象
   - ziplist
-  - skiplist：使用跳表存储元素，使用字典存储元素和优先级，实现 O(1)
+  - skiplist：使用跳表存储元素，使用字典存储元素和对应的优先级，实现 O(1) 的优先级查找
 
 
 
