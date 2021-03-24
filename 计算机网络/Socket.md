@@ -19,7 +19,7 @@
 
 #### 1.2 调用 UDP
 
-![](img/socket的UDP通信.jpg)
+<img src="img/socket的UDP通信.jpg" style="zoom:50%">
 
 UDP 因为无连接，故不需要 connet() 和 accept()，通信时，调用 sendto() 和 recvfrom()，都要传入 IP 地址和端口
 
@@ -59,66 +59,120 @@ UDP 因为无连接，故不需要 connet() 和 accept()，通信时，调用 se
 
 异步 I/O 与信号驱动 I/O 的区别：异步 I/O 通知进程 I/O 完成，信号驱动 I/O 通知进程可以开始 I/O。
 
+#### 2.6 五种 IO 的比较
+
+<img src="img/五种IO的比较.jpg">
+
 
 
 ### 3. select/poll/epoll
 
+select/poll/epoll 均为 IO 多路复用。
+
 #### 3.1 select
 
+方法参数：
+
 ``` c
-int select(int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, 
+int select(int maxfdp1, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, 
            struct timeval *timeout);
 ```
 
-- fd_set 使用数组实现，数组大小使用 **FD_SETSIZE** 定义，所以只能监听少于 FD_SETSIZE 数量的描述符。有三种类型的描述符类型：readset、writeset、exceptset，分别对应读、写、异常条件。
-- timeout 为超时参数，调用 select 会一直阻塞直到有描述符的事件到达或者等待的时间超过 timeout。
-- 成功调用返回结果大于 0，出错返回结果为 -1，超时返回结果为 0。
+- maxfdp1 指定待测试文件描述符个数，描述符 0 到 `maxfdp1`-1 将被测试
+- fd_set 数据结构底层使用数组实现，只能监听少于 FD_SETSIZE 数量的描述符，使用位图的思想，每一位对应一个描述符，
+- readset、writeset、exceptset，分别对应读、写、异常条件的扫描符
+- timeout 为超时参数，调用 select 会一直阻塞直到有描述符的事件到达或者等待的时间超过 timeout，如果设置为 0 则为轮询模式
+- 成功调用返回结果大于 0（fd_set 中位 1 的个数，即就绪的描述符个数），出错返回结果为 -1，超时返回结果为 0
 
+机制：fd_set 内部的元素都与文件描述符关联，当调用 select 时，该进程阻塞，内核根据 IO 状态修改 fd_set 的内容通知调用进程，调用者需要通过 **循环遍历 fd_set 判断该描述符是否就绪**，再进行相应的操作。
 
+``` c
+        ret = select(...);
+        // 没有有效连接
+        if(ret < 0) {
+            ...
+        }
+        // 超时
+        else if(ret == 0)
+        {
+            ...
+        }
+        for(i = 0; i < conn_amount; i++)
+        {
+            // 该连接有效
+            if(FD_ISSET(fd[i],&fdsr))
+            {
+                // 相应操作
+                ...
+            }
+        }
+```
+
+缺点：
+
+- 开销大，需要复制 fd_set 到内核态，并且在内核态进行遍历；
+- 有连接上限，受到内核宏 FD_SETSIZE 的限制
 
 #### 3.2 poll
 
+poll 与 select 功能基本相同，仅解决了连接上限的问题。速度慢，调用需要将全部描述符从进程缓冲区复制到内核缓冲区。
+
+具体实现：
+
 ``` c
 int poll(struct pollfd *fds, unsigned int nfds, int timeout);
+struct pollfd {
+               int   fd;         /* file descriptor */
+               short events;     // 感兴趣的响应事件，通过掩码设置
+               short revents;    // 实际响应事件，通过掩码设置
+           };
 ```
 
-poll 与 select 功能基本相同，速度较慢，调用需要将全部描述符从进程缓冲区复制到内核缓冲区，并且 poll 的移植性比 select 差
+机制：fds 是一个 pollfd 类型的数组，用户通过掩码设置其中的 events 事件参数，调用 poll 之后，fds 被复制到内核空间，内核根据 IO 情况设置返回掩码，通知进程。用户进程也需要通过遍历查询已就绪的连接和事件。
 
-在实现细节上有所不同：
+与 select 的对比：
 
-- poll 的描述符是 pollfd 类型的数组，定义如下：
+- select 会修改描述符，而 poll 不会；
 
-  ``` c
-  struct pollfd {
-                 int   fd;         /* file descriptor */
-                 short events;     /* requested events */
-                 short revents;    /* returned events */
-             };
-  ```
+- select 的描述符受 FD_SETSIZE 限制，如果要实现更多连接后，需要修改内核重新编译； poll 没有描述符数量的限制；
 
-  select 会修改描述符，而 poll 不会；
+- poll 提供了更多事件类型，并且对描述符的重复利用比 select 高，但 poll 的移植性更差。
 
-- select 的描述符类型使用数组实现，FD_SETSIZE 大小默认为 1024，如果要监听更多的话，需要修改 FD_SETSIZE 后重新编译； poll 没有描述符数量的限制；
-
-- poll 提供了更多事件类型，并且对描述符的重复利用上比 select 高。
-
-- 如果一个线程对某个描述符调用了 select 或者 poll，另一个线程关闭了该描述符，会导致调用结果不确定。
-
-  
 
 #### 3.3 epoll
 
+epoll 使用在 Linux 系统上，更加灵活，无操作符数量限制，对多线程更加友好。
+
+机制：用一个文件描述符管理多个描述符，调用 epoll_ctl 将描述符从进程向内核缓冲区 **拷贝一次**，之后不再拷贝；描述符在内核中会被维护在一棵红黑树上，IO 事件触发后，会唤醒描述符并添加到链表上。调用 epoll_wait 时只需要遍历链表上的描述符，显著提高了大量并发连接却只有少量活跃场景的 CPU 利用率。 
+
+具体实现：
+
 ``` c
+/*
+ * 创建一个epoll句柄
+ * size:要监听的描述符个数，只是一个建议
+ * 成功返回一个epoll句柄，失败返回-1
+ */
 int epoll_create(int size);
+
+/**
+ * 注册要监听的事件类型
+ * epfd: epoll句柄
+ * op: 操作类型，包括注册、修改、删除
+ * fd:要监听的描述符
+ * events: 要监听的事件
+ */
 int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；
+
+/**
+ * 等待事件就绪，等待期间也阻塞进程
+ * epfd:epoll句柄
+ * events: 从内核得到的就绪事件集合
+ * maxevents: 告诉内核events的长度
+ * timeout: 超时时间
+ */
 int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);
 ```
-
-**epoll_ctl**：向内核注册新的描述符或者是改变文件描述符。描述符在内核中会被维护在一棵红黑树上，I/O 准备好的描述符被添加到链表中管理，进程调用 
-
-**epoll_wait**：得到 I/O 事件完成的描述符
-
-**<font color=red>epoll 特点</font>**：使用在 Linux 系统上，更加灵活，无操作符数量限制，对多线程更加友好，只需要将描述符从进程向内核缓冲区**拷贝一次**，使用链表则不需要进行轮询，**描述符的状态变化需要进行系统调用**
 
 工作模式：
 
@@ -129,8 +183,6 @@ int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout
 
 #### 3.4 应用场景
 
-select：实时性高的场合，select 的 timeout 精度为微妙，而 poll 和 epoll 为毫秒；需要高移植性的场合
-
-poll：大量描述符，短连接的场合
-
-epoll：Linux 平台，大量描述符，并且是长连接。短连接将导致大量系统调用，降低效率
+- select：实时性高的场合，select 的 timeout 精度为微妙，而 poll 和 epoll 为毫秒；需要高移植性的场合
+- poll：大量描述符，短连接的场合
+- epoll：Linux 平台，大量描述符，并且是长连接。短连接将导致大量系统调用，降低效率
