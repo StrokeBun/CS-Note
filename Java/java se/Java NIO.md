@@ -41,3 +41,21 @@ linux sendfile 的流程：
 见 <a href="../../计算机网络/Socket.md">select、poll、epoll</a>
 
 jdk 1.5 在 nio 中使用 epoll 替代了 select/poll
+
+
+
+### 2. NIO 概述
+
+NIO 解决的问题是大量长连接但其中活跃连接少引起的内存消耗问题，NIO 允许一个线程控制多个连接。其非阻塞指的是在网络 IO 环节线程是非阻塞的，本质上就是 linux 的 select 模式，通过 IO 多路复用来使线程不阻塞，底层使用 epoll 实现。
+
+NIO 的三大核心：
+
+- Buffer：存储数据
+- Channel：类似流，但可读可写，需要与 Buffer 配合使用
+- Selector：允许单线程控制多个 Channel
+
+大量连接但少量活跃连接适合使用 NIO，大量活跃连接使用传统 IO
+
+
+
+ 
