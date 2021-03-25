@@ -28,7 +28,7 @@
 
 循环依赖问题是指 A 类中引入 B 类属性，B 类中引入 A 类属性（或者更多类形成循环），由于 Spring 利用反射机制进行注入，循环依赖将导致实例无法生成。
 
-#### 4.1 循环依赖场景
+##### 4.1 循环依赖场景
 
 - 单例 setter 注入，能解决
 - 多例 setter 注入，无法解决
@@ -36,7 +36,7 @@
 - 单例代理对象 setter 注入，有可能解决
 - DependsOn 循环依赖，无法解决
 
-#### 4.2 解决循环依赖
+##### 4.2 解决循环依赖
 
 Spring 的三级缓存
 
@@ -65,3 +65,38 @@ Spring 的三级缓存
   ```
 
   earlyBeanReference 取得该 bean 的代理对象，后续再将代理对象放入二级缓存。
+
+
+
+#### 5. Spring 容器启动流程
+
+Spring IOC 容器启动流程主要是
+
+- 定位：获取配置文件路径
+- 加载：把配置文件解析成 BeanDefinition
+- 注册：将 BeanDefinition 存储到 IOC 容器中
+- 实例化：根据 BeanDefinition 创建实例
+
+`AbstractApplicationContext.refresh()` 实现了主要逻辑：
+
+- `prepareReresh()` 准备工作，记录容器启动事件、处理配置文件占位符等；
+- `obtainFreshBeanFactory()`将配置文件解析成 BeanDefinition 并注册，**重点**；
+- `prepareBeanFactory`：设置  BeanFactory 的类加载器等初始化操作；
+- `postProcessBeanFactory`： 添加 BeanFactoryPostProcessor 的实现类；
+- `invokeBeanFactoryPostProcessors`：调用上述实现类的方法；
+- `finishBeanFactoryInitialization()`：初始化所有单例 bean，**重点**
+
+
+
+#### 6. Springboot 自动配置
+
+在 springboot 项目中，注解 `@SpringBootApplication` 是一个组合注解，其中的 `@EnableAutoConfiguration` 开启了自动配置
+
+原理：在 autoconfig 的 jar 包中存放了默认配置文件 `META-INF/spring.factories`，内容为配置类的全限定名，将这些自动配置类加载到 Spring 容器中
+
+``` properties
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration,\
+org.springframework.boot.autoconfigure.aop.AopAutoConfiguration,\
+```
+
