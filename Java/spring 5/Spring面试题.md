@@ -100,3 +100,29 @@ org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfig
 org.springframework.boot.autoconfigure.aop.AopAutoConfiguration,\
 ```
 
+
+
+#### 7. IOC 的理解
+
+IOC 即控制反转，将对象的创建和管理由程序员交由 IOC 容器控制，资源由容器统一管理；依赖注入 DI 是 IOC 的实现手段，在容器运行期间，动态将依赖关系注入到对象之中（即把需要的类赋值给相应的属性）。
+
+IOC 是依赖倒置原则的一种设计思路，高层不依赖底层实现。详见<a href="https://www.zhihu.com/question/23277575">Spring IOC的好处</a>
+
+优点：
+
+- 解耦，对象与对象之间是松耦合，替换服务方便（可以通过配置文件）
+
+缺点：
+
+- 增加系统的复杂度，大量配置文件
+- 通过反射生成对象，效率有所损耗
+
+
+
+#### 8. AOP 的理解
+
+AOP 解决了系统需求实现（日志、权限验证）在各处散落的问题，把和主业务无关的事情，放到代码外做，在运行时动态地将代码切入到类的指定方法、指定位置上。
+
+OOP 的粒度在类上，用继承和组合的方式（多态、继承、模板方法等等），绵绵编织成一套类和对象体系；AOP 的粒度在方法上（执行前，执行后等等），凡某包某类某开头的方法，一并处理。AOP 是对 OOP 的有益补充。
+
+Spring AOP 使用动态代理，提供调用者增强过后的对象。
