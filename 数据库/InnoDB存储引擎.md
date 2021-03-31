@@ -255,5 +255,44 @@ ReadView：TODO
 
 ### 8. 日志
 
+#### 8.1 redo log
+
+引入 redo log 的原因：Buffer Pool 的内容同步到磁盘需要一定时间，如果中间崩溃将无法进行数据恢复，rodo log 记录了事务对数据库的修改，崩溃后可以进行恢复。
+
+redo log 的通用结构：
+
+- `type`：日志类型
+- `space ID`：表空间 ID
+- `page number`：页号
+- `data`：保存页内偏移和数据
+
+<img src="img/redo log通用结构.jpg">
+
+redo log 的写入过程：
+
+- 写入 `redo log buffer`：一个 Mini-Transaction 完成之后产生的 redo log 将先写入到 `redo log buffer` 中（一个事务包含多个 Mini-Transaction，故多个事务的 redo log 将会交替写入）
+- 同步到磁盘：当 `log buffer` 空间不足、事务提交、后台线程定时、关闭服务器、`checkpoint` 之一满足条件时，将同步 redo log 到磁盘。
 
 
+
+redo log 在磁盘上是循环写入的，故超过存储上限将从前面进行覆盖，InnoDB 设置了 `checkpoint`，在此之间的脏页已经全部同步到磁盘，故恢复从 `checkpoint` 开始，往后顺序执行即可。
+
+
+
+#### 8.2 undo log
+
+undo log 主要用于实现事务回滚
+
+TODO
+
+
+
+#### 8.3 binlog
+
+介绍：binlog 是在 MySQL 的 Server 层实现的，所有引擎都可以使用的日志。binlog 记录了改动操作的逻辑（类似 redis 的 aof 机制）
+
+redo log 和 binlog 采用两阶段提交，保证在以下任意阶段崩溃后，通过日志恢复的数据都与预期的相同：
+
+- 写 redo log，处于 redo log 的准备阶段
+- 写 binlog
+- 提交事务，处于 redo log 的提交阶段
