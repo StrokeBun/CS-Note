@@ -129,22 +129,23 @@ InnoDB 会自动将主键列将为聚簇索引，没有主键则选择一个唯�
 
 <img src="img/explain表头.jpg" />
 
-explain 的表字段：
+explain 的重要参数：
 
-- id：表示子句或者操作表的顺序，该值越大越先执行，相同则从上向下顺序执行 
-- select_type：标记了查询类型
-  - SIMPLE：简单查询，不包含子查询和 UNION
-  - PRIMARY：包含复杂子部分，最外层则标记为 PRIMARY
-  - SUBQUERY：SELECT 或 WHERE 列表中包含恶劣子查询
-  -  ...
-- table：使用的表
-- partitions：
-- type：该查询的效率，常见的从高到低为 system > const > eq_ref > ref > range > index > ALL  
-- possible_keys，keys：可能使用的索引和实际使用的索引 
-- key_len：索引字段的最大可能使用字节数
-- ref：查询中与其他表关联的字段
-- rows：大致估算的查询需要读取的行数
-- extra：
-  - Using filesort：需要使用外部索引进行排序，无法使用表内索引排序
-  - Using index：仅使用索引树的信息进行检索，例如使用了覆盖索引
-  - ...
+- `id`：表示子句或者操作表的顺序，该值越大越先执行，相同则从上向下顺序执行 
+
+- `select_type`：对应的查询类型
+  - SIMPLE : 简单查询
+  - PRIMARY：包含子查询
+- `type`：对应单表的访问方法，见 <a href="InnoDB存储引擎.md">5.访问方法</a>，效率从高到低为 system > const > eq_ref > ref > range > index > ALL
+- `possible_keys`：可能用到的索引
+- `key`：经过查询优化器后实际使用的索引
+- `key_len`：实际使用的索引最大可能长度
+- `ref`：使用索引列进行等值查询时，与索引列进行等值匹配的对象信息
+- `rows`： 预估需要读取的行数
+- `filtered`：经过搜索条件过滤后剩余记录条数的百分比
+- `Extra`：其他信息，常使用的如下
+  - Using index：实现了覆盖索引
+  - Using index condition：出现了索引列但未使用索引
+  - Using where：使用全表扫描且出现了针对该表的 where 字句
+  - Using join buffer (Block Nested Loop)
+  - Using filesort：无法使用索引排序，需要进行外部排序

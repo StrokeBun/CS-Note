@@ -56,7 +56,7 @@ MySQL 主要组件
 除了查询流程的部分，更新语句会清空查询缓存，并设置redo log 重做日志 和 bin log 归档日志
 
 - redo log：InnoDB 专有，记录物理改动，即数据变化；当更新数据时，先写入 redo log，更新内存，等到合适的时机写入磁盘；redo log 大小固定，超过上限则进行覆盖，故只能保存一定时间的记录
-- binlog：server 层共有，记录逻辑，即 SQL 语句
+- binlog：server 层共有，记录 SQL 语句
 
 <img src="img/更新语句执行流程.jpg" style="zoom:70%" />
 
