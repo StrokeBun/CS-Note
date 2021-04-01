@@ -293,7 +293,7 @@ redo log 的通用结构：
 redo log 的写入过程：
 
 - 写入 `redo log buffer`：一个 Mini-Transaction 完成之后产生的 redo log 将先写入到 `redo log buffer` 中（一个事务包含多个 Mini-Transaction，故多个事务的 redo log 将会交替写入）
-- 同步到磁盘：当 `log buffer` 空间不足、事务提交、后台线程定时、关闭服务器、`checkpoint` 之一满足条件时，将同步 redo log 到磁盘。
+- 同步到磁盘：当 `log buffer` 空间不足、事务提交、后台线程定时、关闭服务器、`checkpoint` 之一满足条件时，将同步 redo log 到磁盘（先写到操作系统的文件管理系统上，再通过 fsync 同步到磁盘 ）。
 
 
 
@@ -314,5 +314,5 @@ undo log 主要用于实现事务回滚和 MVCC，属于逻辑日志，将数据
 redo log 和 binlog 采用两阶段提交，保证在以下任意阶段崩溃后，通过日志恢复的数据都与预期的相同：
 
 - 写 redo log，处于 redo log 的准备阶段
-- 写 binlog
+- 写 binlog（binlog cache -> 磁盘 binlog 文件 -> fsync 持久化）
 - 提交事务，处于 redo log 的提交阶段
