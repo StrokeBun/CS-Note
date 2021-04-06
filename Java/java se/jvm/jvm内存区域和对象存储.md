@@ -11,6 +11,8 @@
 
 - 直接内存：内含元空间，也用于 NIO 堆外内存，溢出抛出 `OutOfMemoryError`
 
+<img src="img/jvm内存区.png">
+
 
 
 ### 2. 对象存储
